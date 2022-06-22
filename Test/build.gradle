@@ -1,0 +1,26 @@
+import static org.apache.tools.ant.taskdefs.condition.Os.*
+
+apply plugin: 'cpp-application'
+
+application {
+  dependencies {
+    implementation project(":CommBus")
+  }
+
+  source.from file("src/cpp")
+  privateHeaders.from file("src/include")
+}
+
+task sim(type:Exec) {
+  dependsOn(build)
+  description "Simulate ${project.name}"
+  workingDir "${project.buildDir}/exe/${application.name}/debug/"
+
+  if (isFamily(FAMILY_UNIX) || isFamily(FAMILY_MAC)) {
+    commandLine "./${project.name}"
+  } else if (isFamily(FAMILY_WINDOWS)) {
+    commandLine "./${project.name}.exe"
+  } else {
+    ant.fail("Could not determin os family")
+  }
+}

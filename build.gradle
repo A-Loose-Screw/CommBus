@@ -1,0 +1,9 @@
+import static org.apache.tools.ant.taskdefs.condition.Os.*
+
+plugins {
+  id 'cpp'
+}
+
+wrapper {
+  gradleVersion = '7.4.2'
+}

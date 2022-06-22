@@ -1,0 +1,9 @@
+import static org.apache.tools.ant.taskdefs.condition.Os.*
+
+apply plugin: 'cpp-library'
+
+library {
+  linkage = [Linkage.STATIC]
+  source.from file("src/cpp")
+  publicHeaders.from file("src/include")
+}
