@@ -17,6 +17,7 @@ typedef int ssize_t;
 #endif
 #include <sys/types.h>
 
+#include "Platform.h"
 #include "modbus/modbus.h"
 
 MODBUS_BEGIN_DECLS
@@ -106,7 +107,7 @@ void _modbus_init_common(modbus_t *ctx);
 void _error_print(modbus_t *ctx, const char *context);
 int _modbus_receive_msg(modbus_t *ctx, uint8_t *msg, msg_type_t msg_type);
 
-#ifndef HAVE_STRLCPY
+#ifdef COMMBUS_PLATFORM_LINUX
 size_t strlcpy(char *dest, const char *src, size_t dest_size);
 #endif
 

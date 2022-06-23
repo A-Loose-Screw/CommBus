@@ -8,9 +8,9 @@ library {
   publicHeaders.from file("src/include")
 
   binaries.configureEach {
-    if (toolChain instanceof Gcc && targetMachine.operatingSystemFamily.linux) {
-      linkTask.get().linkerArgs = ["-lpthread"]
-    }
+    // if (toolChain instanceof Gcc && targetMachine.operatingSystemFamily.linux) {
+    //   linkTask.get().linkerArgs = ["-lpthread"]
+    // }
 
     if (toolChain instanceof Gcc || toolChain instanceof Clang) {
       compileTask.get().compilerArgs = ["-std=c++17"]
