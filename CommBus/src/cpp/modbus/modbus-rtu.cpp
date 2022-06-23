@@ -19,11 +19,13 @@
 #include "modbus/modbus-rtu.h"
 #include "modbus/modbus-rtu-private.h"
 
-#if HAVE_DECL_TIOCSRS485 || HAVE_DECL_TIOCM_RTS
+#include "Platform.h"
+
+#if defined(COMMBUS_PLATFORM_LINUX) || defined(COMMBUS_PLATFORM_MACOS)
 #include <sys/ioctl.h>
 #endif
 
-#if HAVE_DECL_TIOCSRS485
+#ifdef COMMBUS_PLATFORM_LINUX
 #include <linux/serial.h>
 #endif
 

@@ -6,4 +6,16 @@ library {
   linkage = [Linkage.STATIC]
   source.from file("src/cpp")
   publicHeaders.from file("src/include")
+
+  binaries.configureEach {
+    if (toolChain instanceof Gcc && targetMachine.operatingSystemFamily.linux) {
+      linkTask.get().linkerArgs = ["-lpthread"]
+    }
+
+    if (toolChain instanceof Gcc || toolChain instanceof Clang) {
+      compileTask.get().compilerArgs = ["-std=c++17"]
+    } else if (toolChain instanceof VisualCpp) {
+      compileTask.get().compilerArgs = ["/std:c++17"]
+    }
+  }
 }

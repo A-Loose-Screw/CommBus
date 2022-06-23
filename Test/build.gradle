@@ -14,6 +14,10 @@ application {
     if (toolChain instanceof Gcc && targetMachine.operatingSystemFamily.linux) {
       linkTask.get().linkerArgs.add("-lpthread")
     }
+
+    if (toolChain instanceof Gcc) {
+      compileTask.get().compilerArgs = ["-std=c++17"]
+    }
   }
 }
 

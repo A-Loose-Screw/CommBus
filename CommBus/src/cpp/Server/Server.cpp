@@ -2,7 +2,7 @@
 #include <iostream>
 #include <pthread.h>
 #include <thread>
-#include "Common.h"
+#include "Platform.h"
 #include "Server/Server.h"
 
 using namespace CommBus;

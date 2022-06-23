@@ -32,7 +32,7 @@ namespace CommBus {
     std::thread loop_t;
     void client_handler(int cli_sock);
     std::vector<std::thread> _client_handler_threads;
-    ModbusMap _map = {500, 500, 500, 500, 247};
+    ModbusMap _map;
     modbus_t *_mb;
     modbus_mapping_t *_mbMap;
     int _server_sock = -1;

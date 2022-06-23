@@ -681,7 +681,7 @@ int modbus_tcp_accept(modbus_t *ctx, int *s)
 
     addrlen = sizeof(addr);
     
-    #ifdef HAVE_ACCEPT4
+    #ifdef COMMBUS_PLATFORM_LINUX
         /* Inherit socket flags and use accept4 call */
         ctx->s = accept4(*s, (struct sockaddr *)&addr, &addrlen, SOCK_CLOEXEC);
     #else
@@ -711,7 +711,7 @@ int modbus_tcp_pi_accept(modbus_t *ctx, int *s)
     }
 
     addrlen = sizeof(addr);
-#ifdef HAVE_ACCEPT4
+#ifdef COMMBUS_PLATFORM_LINUX
     /* Inherit socket flags and use accept4 call */
     ctx->s = accept4(*s, (struct sockaddr *)&addr, &addrlen, SOCK_CLOEXEC);
 #else

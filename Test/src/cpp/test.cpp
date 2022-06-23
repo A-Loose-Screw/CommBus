@@ -1,6 +1,10 @@
 #include <iostream>
 #include "CommBus.h"
 
+#ifdef COMMBUS_PLATFORM_UNIX
+#include <unistd.h>
+#endif
+
 void client_sender() {
   std::cout << "Client Sender Starting" << std::endl;
   modbus_t *mb;

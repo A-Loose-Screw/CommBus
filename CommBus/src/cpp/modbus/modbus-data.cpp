@@ -5,6 +5,7 @@
  */
 
 #include <stdlib.h>
+#include "Platform.h"
 
 #ifndef _MSC_VER
 #  include <stdint.h>
@@ -15,21 +16,19 @@
 #include <string.h>
 #include <assert.h>
 
-#if defined(_WIN32)
+#ifdef COMMBUS_PLATFORM_WINDOWS
 #  include <winsock2.h>
 #else
 #  include <arpa/inet.h>
 #endif
 
-#include "modbus/config.h"
-
 #include "modbus/modbus.h"
 
-#if defined(HAVE_BYTESWAP_H)
+#ifdef COMMBUS_PLATFORM_LINUX
 #  include <byteswap.h>
 #endif
 
-#if defined(__APPLE__)
+#ifdef COMMBUS_PLATFORM_MACOS
 #  include <libkern/OSByteOrder.h>
 #  define bswap_16 OSSwapInt16
 #  define bswap_32 OSSwapInt32
