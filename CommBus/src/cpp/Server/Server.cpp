@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <iostream>
-#include <pthread.h>
+#include <chrono>
 #include <thread>
 #include "Platform.h"
 #include "Server/Server.h"
@@ -63,7 +63,7 @@ void Server::loop() {
   std::cout << "Server Listening..." << std::endl;
 
   while (_async_run) {
-    sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     int cli_sock = modbus_tcp_accept(_mb, &_server_sock);
     if (cli_sock < 0) {
       if (errno != EWOULDBLOCK) {

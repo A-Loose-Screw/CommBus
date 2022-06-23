@@ -1,4 +1,6 @@
 #include <iostream>
+#include <thread>
+#include <chrono>
 #include "CommBus.h"
 
 #ifdef COMMBUS_PLATFORM_UNIX
@@ -36,7 +38,7 @@ int main() {
   CommBus::Server server;
   server.start();
 
-  sleep(5);
+  std::this_thread::sleep_for(std::chrono::seconds(5));
   client_sender();
   server.stop();
   // while (true);
