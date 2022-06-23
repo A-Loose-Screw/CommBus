@@ -9,6 +9,12 @@ application {
 
   source.from file("src/cpp")
   privateHeaders.from file("src/include")
+
+  binaries.configureEach {
+    if (toolChain instanceof Gcc && targetMachine.operatingSystemFamily.linux) {
+      linkTask.get().linkerArgs.add("-lpthread")
+    }
+  }
 }
 
 task sim(type:Exec) {

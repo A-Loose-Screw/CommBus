@@ -27,6 +27,7 @@ namespace CommBus {
    private:
     int _n_clients;
     bool _async_run = false;
+    bool _stoppable = false;
     void loop();
     std::thread loop_t;
     void client_handler(int cli_sock);
@@ -34,6 +35,7 @@ namespace CommBus {
     ModbusMap _map = {500, 500, 500, 500, 247};
     modbus_t *_mb;
     modbus_mapping_t *_mbMap;
+    int _server_sock = -1;
   };
 }
 

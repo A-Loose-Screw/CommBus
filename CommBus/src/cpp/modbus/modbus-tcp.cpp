@@ -31,6 +31,7 @@
 # define close closesocket
 #else
 # include <sys/socket.h>
+#include <fcntl.h>
 # include <sys/ioctl.h>
 
 #if defined(__OpenBSD__) || (defined(__FreeBSD__) && __FreeBSD__ < 5)
@@ -508,6 +509,15 @@ int modbus_tcp_listen(modbus_t *ctx, int nb_connection)
 #endif
 
     new_s = socket(PF_INET, flags, IPPROTO_TCP);
+
+    // Set non blocking
+#ifdef OS_WIN32
+    unsigned long mode = blocking ? 0 : 1;
+    ioctlsocket(fd, FIONBIO, &mode);
+#else
+    fcntl(new_s, F_SETFL, O_NONBLOCK);
+#endif
+
     if (new_s == -1) {
         return -1;
     }
@@ -670,12 +680,13 @@ int modbus_tcp_accept(modbus_t *ctx, int *s)
     }
 
     addrlen = sizeof(addr);
-#ifdef HAVE_ACCEPT4
-    /* Inherit socket flags and use accept4 call */
-    ctx->s = accept4(*s, (struct sockaddr *)&addr, &addrlen, SOCK_CLOEXEC);
-#else
-    ctx->s = accept(*s, (struct sockaddr *)&addr, &addrlen);
-#endif
+    
+    #ifdef HAVE_ACCEPT4
+        /* Inherit socket flags and use accept4 call */
+        ctx->s = accept4(*s, (struct sockaddr *)&addr, &addrlen, SOCK_CLOEXEC);
+    #else
+        ctx->s = accept(*s, (struct sockaddr *)&addr, &addrlen);
+    #endif
 
     if (ctx->s == -1) {
         return -1;
