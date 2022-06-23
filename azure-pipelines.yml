@@ -1,0 +1,21 @@
+trigger:
+- master
+
+jobs:
+- job: linux
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+    - template: 'azure-steps.yml'
+
+- job: mac
+  pool:
+    vmImage: 'macOS-latest '
+  steps:
+    - template: 'azure-steps.yml'
+
+- job: windows
+  pool:
+    vmImage: 'windows-latest'
+  steps:
+    - template: 'azure-steps.yml'

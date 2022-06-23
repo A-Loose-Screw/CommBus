@@ -76,7 +76,7 @@ void Server::loop() {
     _client_handler_threads.push_back(std::move(cli_t));
   }
 
-  std::cout << " -- Closing Threads -- " << std::endl;
+  std::cout << " -- Closing Network Threads -- " << std::endl;
 
   for (auto &client_handler : _client_handler_threads) {
     client_handler.join();

@@ -1,0 +1,13 @@
+steps:
+  # Init
+  - script: git submodule update --init
+  - script: git submodule update --remote -f
+
+  - task: 'Gradle@2'
+    inputs:
+      workingDirectory: ''
+      gradleWrapperFile: 'gradlew'
+      gradleOptions: '-Xmx4096m'
+      publishJUnitResults: false
+      testResultsFiles: '**/TEST-*.xml'
+      tasks: 'clean sim'
