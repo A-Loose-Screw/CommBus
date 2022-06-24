@@ -7,6 +7,7 @@
 #ifndef MODBUS_TCP_PRIVATE_H
 #define MODBUS_TCP_PRIVATE_H
 
+#include "Platform.h"
 #define _MODBUS_TCP_HEADER_LENGTH      7
 #define _MODBUS_TCP_PRESET_REQ_LENGTH 12
 #define _MODBUS_TCP_PRESET_RSP_LENGTH  8

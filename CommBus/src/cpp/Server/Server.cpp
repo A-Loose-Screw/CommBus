@@ -66,7 +66,8 @@ void Server::loop() {
     std::this_thread::sleep_for(std::chrono::seconds(1));
     int cli_sock = modbus_tcp_accept(_mb, &_server_sock);
     if (cli_sock < 0) {
-      if (errno != EWOULDBLOCK) {
+      if (COMMBUS_ERRNO != COMMBUS_WOULDBLOCK) {
+        printf("Socket Code: %d\n", cli_sock);
         perror("Error accepting client");
       }
       continue;

@@ -40,7 +40,8 @@ int main() {
 
   std::this_thread::sleep_for(std::chrono::seconds(5));
   client_sender();
-  server.stop();
+  std::cout << "Stopping server" << std::endl;
+  // server.stop();
   // while (true);
   std::cout << "Program End" << std::endl;
   return 0;

@@ -20,8 +20,6 @@ typedef int ssize_t;
 #include "Platform.h"
 #include "modbus/modbus.h"
 
-MODBUS_BEGIN_DECLS
-
 /* It's not really the minimal length (the real one is report slave ID
  * in RTU (4 bytes)) but it's a convenient size to use in RTU or TCP
  * communications to read many values or write a single one.
@@ -107,10 +105,8 @@ void _modbus_init_common(modbus_t *ctx);
 void _error_print(modbus_t *ctx, const char *context);
 int _modbus_receive_msg(modbus_t *ctx, uint8_t *msg, msg_type_t msg_type);
 
-#ifdef COMMBUS_PLATFORM_LINUX
+#if defined(COMMBUS_PLATFORM_LINUX) || defined(COMMBUS_PLATFORM_WINDOWS)
 size_t strlcpy(char *dest, const char *src, size_t dest_size);
 #endif
-
-MODBUS_END_DECLS
 
 #endif  /* MODBUS_PRIVATE_H */

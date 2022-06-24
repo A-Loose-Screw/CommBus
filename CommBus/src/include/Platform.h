@@ -1,6 +1,11 @@
 #ifndef COMMBUS_PLATFORM_DETECTION_H
 #define COMMBUS_PLATFORM_DETECTION_H
 
+
+/**
+ * @brief Platform detector
+ * 
+ */
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
   #define COMMBUS_PLATFORM_WINDOWS
 
@@ -33,7 +38,7 @@
   #define COMMBUS_PLATFORM_POSIX
 
 #elif defined(__OpenBSD__) || (defined(__FreeBSD__) && __FreeBSD__ < 5)
-  # define OS_BSD
+  #define OS_BSD
 #else
   #error "Unknown compiler"
 #endif
@@ -44,6 +49,7 @@
 
 /**
  * @brief Common Headers for CommBus Start
+ * & Common defines
  * 
  */
 #ifdef COMMBUS_PLATFORM_UNIX
@@ -62,6 +68,14 @@
   #include <unistd.h>
   #include <tuple>
 
+  #ifndef COMMBUS_ERRNO
+  #define COMMBUS_ERRNO errno
+  #endif
+
+  #ifndef COMMBUS_WOULDBLOCK
+  #define COMMBUS_WOULDBLOCK EWOULDBLOCK
+  #endif
+
 #ifdef COMMBUS_PLATFORM_LINUX
 // Linux only
 #endif
@@ -72,11 +86,25 @@
 
 #elif defined(COMMBUS_PLATFORM_WINDOWS)
   // Windows only
+  #include <winsock2.h>
+  #include <ws2tcpip.h>
   #include <stdio.h>
-  #include <WinSock2.h>
-  #include <WS2tcpip.h>
-  # define SHUT_RDWR 2
-  #ifndef close
-  # define close closesocket
+  #include <stdlib.h>   // Needed for _wtoi
+
+  #pragma comment(lib, "Ws2_32.lib")
+
+  #ifndef COMMBUS_ERRNO
+  #define COMMBUS_ERRNO WSAGetLastError()
   #endif
+
+  #ifndef COMMBUS_WOULDBLOCK
+  #define COMMBUS_WOULDBLOCK WSAEWOULDBLOCK
+  #endif
+
+  #define SHUT_RDWR 2
+
+  #ifndef close
+  #define close closesocket
+  #endif
+
 #endif

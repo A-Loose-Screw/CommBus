@@ -1869,7 +1869,7 @@ void modbus_mapping_free(modbus_mapping_t *mb_mapping)
     free(mb_mapping);
 }
 
-#ifdef COMMBUS_PLATFORM_LINUX
+#if defined(COMMBUS_PLATFORM_LINUX) || defined(COMMBUS_PLATFORM_WINDOWS)
 size_t strlcpy(char *dest, const char *src, size_t dest_size)
 {
     register char *d = dest;

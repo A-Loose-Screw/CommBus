@@ -19,6 +19,8 @@
 #ifndef MODBUS_VERSION_H
 #define MODBUS_VERSION_H
 
+#include "Platform.h"
+
 /* The major version, (1, if %LIBMODBUS_VERSION is 1.2.3) */
 #define LIBMODBUS_VERSION_MAJOR (3)
 

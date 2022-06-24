@@ -29,7 +29,7 @@ task sim(type:Exec) {
   if (isFamily(FAMILY_UNIX) || isFamily(FAMILY_MAC)) {
     commandLine "./${project.name}"
   } else if (isFamily(FAMILY_WINDOWS)) {
-    commandLine "./${project.name}.exe"
+    commandLine "cmd", "/c", "${project.name}.exe"
   } else {
     ant.fail("Could not determin os family")
   }

@@ -23,28 +23,7 @@
 #include <signal.h>
 #include <sys/types.h>
 
-#if defined(_WIN32)
-/* Already set in modbus-tcp.h but it seems order matters in VS2005 */
-# include <winsock2.h>
-# include <ws2tcpip.h>
-# define SHUT_RDWR 2
-# define close closesocket
-#else
-# include <sys/socket.h>
-#include <fcntl.h>
-# include <sys/ioctl.h>
-
-#if defined(__OpenBSD__) || (defined(__FreeBSD__) && __FreeBSD__ < 5)
-# define OS_BSD
-# include <netinet/in_systm.h>
-#endif
-
-# include <netinet/in.h>
-# include <netinet/ip.h>
-# include <netinet/tcp.h>
-# include <arpa/inet.h>
-# include <netdb.h>
-#endif
+#include "Platform.h"
 
 #if !defined(MSG_NOSIGNAL)
 #define MSG_NOSIGNAL 0
@@ -220,8 +199,7 @@ static int _modbus_tcp_set_ipv4_options(int s)
     /* Set the TCP no delay flag */
     /* SOL_TCP = IPPROTO_TCP */
     option = 1;
-    rc = setsockopt(s, IPPROTO_TCP, TCP_NODELAY,
-                    (const void *)&option, sizeof(int));
+    rc = setsockopt(s, IPPROTO_TCP, TCP_NODELAY, (const char *)&option, sizeof(int));
     if (rc == -1) {
         return -1;
     }
@@ -289,7 +267,7 @@ static int _connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen,
         }
 
         /* The connection is established if SO_ERROR and optval are set to 0 */
-        rc = getsockopt(sockfd, SOL_SOCKET, SO_ERROR, (void *)&optval, &optlen);
+        rc = getsockopt(sockfd, SOL_SOCKET, SO_ERROR, (char *)&optval, &optlen);
         if (rc == 0 && optval == 0) {
             return 0;
         } else {
@@ -512,8 +490,8 @@ int modbus_tcp_listen(modbus_t *ctx, int nb_connection)
 
     // Set non blocking
 #ifdef OS_WIN32
-    unsigned long mode = blocking ? 0 : 1;
-    ioctlsocket(fd, FIONBIO, &mode);
+    unsigned long mode = 1;
+    ioctlsocket(new_s, FIONBIO, &mode);
 #else
     fcntl(new_s, F_SETFL, O_NONBLOCK);
 #endif
@@ -629,7 +607,7 @@ int modbus_tcp_pi_listen(modbus_t *ctx, int nb_connection)
         } else {
             int enable = 1;
             rc = setsockopt(s, SOL_SOCKET, SO_REUSEADDR,
-                            (void *)&enable, sizeof (enable));
+                            (char *)&enable, sizeof (enable));
             if (rc != 0) {
                 close(s);
                 if (ctx->debug) {
