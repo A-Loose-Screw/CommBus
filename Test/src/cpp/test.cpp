@@ -66,8 +66,8 @@ int main() {
 
   // client_sender();
   
-  #ifndef COMMBUS_TEST
   std::this_thread::sleep_for(std::chrono::seconds(5));
+  #ifndef COMMBUS_TEST
   while (true);
   #endif
 

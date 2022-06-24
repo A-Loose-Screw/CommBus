@@ -11,3 +11,4 @@ steps:
       publishJUnitResults: false
       testResultsFiles: '**/TEST-*.xml'
       tasks: 'clean sim'
+      options: '-Ptest'
