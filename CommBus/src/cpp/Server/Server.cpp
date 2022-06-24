@@ -10,7 +10,6 @@ using namespace CommBus;
 Server::Server(const char *ip, int port) {
   _mb = modbus_new_tcp(ip, port);
   _mbMap = modbus_mapping_new(_map.n_bits, _map.n_input_bits, _map.n_registers, _map.n_input_registers);
-  _n_clients = _map.n_clients;
 
   if (_mbMap == NULL) {
     perror("Failed to allocate mapping");
@@ -28,14 +27,19 @@ Server::~Server() {
 }
 
 void Server::client_handler(int cli_sock) {
-  std::cout << "Client Connection Created: " << cli_sock  << std::endl;
+  std::cout << "Server Side: Client Connection Created: " << cli_sock  << std::endl;
   while (_async_run) {
+    /**
+     * @brief Do main communication here with clients
+     * 
+     */
     uint8_t query[MODBUS_TCP_MAX_ADU_LENGTH];
-    uint16_t tab_reg[2];
+    // uint16_t tab_reg[2];
     int rc;
 
     rc = modbus_receive(_mb, query);
     if (rc > 0) {
+      std::cout << "Received Data" << std::endl;
       // Reply, (rc being the query size)
       modbus_reply(_mb, query, rc, _mbMap);
 
@@ -45,14 +49,16 @@ void Server::client_handler(int cli_sock) {
     }
   }
 
-  std::cout << "Client Connection lost" << std::endl;
   if (cli_sock != -1) {
     close(cli_sock);
   }
+  std::cout << "Server Side: Client Connection lost" << std::endl;
 }
 
 void Server::loop() {
-  _server_sock = modbus_tcp_listen(_mb, _n_clients);
+  _server_sock = modbus_tcp_listen(_mb, _map.n_clients);
+  // modbus_set_debug(_mb, true);
+
 
   if (_server_sock == -1) {
     fprintf(stderr, "Unable to listen TCP connection\n");
@@ -64,6 +70,12 @@ void Server::loop() {
 
   while (_async_run) {
     std::this_thread::sleep_for(std::chrono::seconds(1));
+    for (auto &client_handler : _client_handler_threads) {
+      if (client_handler.joinable()) {
+        client_handler.join();
+        std::cout << "Joined old thread" << std::endl;
+      }
+    }
     int cli_sock = modbus_tcp_accept(_mb, &_server_sock);
     if (cli_sock < 0) {
       if (COMMBUS_ERRNO != COMMBUS_WOULDBLOCK) {
@@ -83,7 +95,9 @@ void Server::loop() {
   std::cout << " -- Closing Network Threads -- " << std::endl;
 
   for (auto &client_handler : _client_handler_threads) {
-    client_handler.join();
+    if (client_handler.joinable()) {
+      client_handler.join();
+    }
   }
 
   if (_server_sock != -1) {
@@ -101,6 +115,8 @@ void Server::start() {
 
 void Server::stop() {
   _async_run = false;
-  loop_t.join();
+  if (loop_t.joinable()) {
+    loop_t.join();
+  }
   _stoppable = false;
 }

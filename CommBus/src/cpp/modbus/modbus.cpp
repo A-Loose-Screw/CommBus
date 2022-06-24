@@ -18,6 +18,8 @@
 #include <unistd.h>
 #endif
 
+#include <iostream>
+
 #include "Platform.h"
 #include "modbus/modbus.h"
 #include "modbus/modbus-private.h"
