@@ -15,7 +15,7 @@ application {
       linkTask.get().linkerArgs.add("-lpthread")
     }
 
-    if (toolChain instanceof Gcc) {
+    if (toolChain instanceof Gcc || toolChain instanceof Clang) {
       compileTask.get().compilerArgs = ["-std=c++17"]
     }
 
