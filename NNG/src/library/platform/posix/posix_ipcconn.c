@@ -11,6 +11,8 @@
 
 #include "core/nng_impl.h"
 
+#ifdef NNG_PLATFORM_POSIX
+
 #include <errno.h>
 #include <fcntl.h>
 #include <poll.h>
@@ -580,3 +582,4 @@ nni_posix_ipc_init(nni_ipc_conn *c, nni_posix_pfd *pfd)
 {
 	c->pfd = pfd;
 }
+#endif

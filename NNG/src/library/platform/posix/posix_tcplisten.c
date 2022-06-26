@@ -11,6 +11,7 @@
 
 #include "core/nng_impl.h"
 
+#ifdef NNG_PLATFORM_POSIX
 #include <arpa/inet.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -428,3 +429,4 @@ nni_tcp_listener_set(nni_tcp_listener *l, const char *name, const void *buf,
 {
 	return (nni_setopt(tcp_listener_options, name, l, buf, sz, t));
 }
+#endif

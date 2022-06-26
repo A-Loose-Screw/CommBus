@@ -8,6 +8,7 @@
 // found online at https://opensource.org/licenses/MIT.
 //
 #include <nng/nng.h>
+#ifdef NNG_PLATFORM_POSIX
 #include <testing/nuts.h>
 
 void
@@ -29,3 +30,4 @@ NUTS_TESTS = {
 	{ "ipc security descriptor", test_ipc_win_sec },
 	{ NULL, NULL },
 };
+#endif

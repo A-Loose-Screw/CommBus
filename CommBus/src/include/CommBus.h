@@ -6,4 +6,3 @@
 #include <nngpp/protocol/sub0.h>
 
 #include <cstdio>
-

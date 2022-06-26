@@ -15,9 +15,10 @@
 // normally be running.  This is the only time it can fail with correct
 // arguments, and then only if it is interrupted with a signal.
 
-#include <sys/random.h>
 
 #include "core/nng_impl.h"
+#ifdef NNG_PLATFORM_POSIX
+#include <sys/random.h>
 
 #ifdef NNG_HAVE_GETRANDOM
 
@@ -37,4 +38,5 @@ nni_random(void)
 	return (val);
 }
 
+#endif
 #endif

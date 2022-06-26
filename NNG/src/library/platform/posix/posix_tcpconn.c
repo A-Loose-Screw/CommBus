@@ -10,7 +10,7 @@
 //
 
 #include "core/nng_impl.h"
-
+#ifdef NNG_PLATFORM_POSIX
 #include <errno.h>
 #include <fcntl.h>
 #include <netinet/in.h>
@@ -523,3 +523,4 @@ nni_posix_tcp_start(nni_tcp_conn *c, int nodelay, int keepalive)
 
 	nni_posix_pfd_set_cb(c->pfd, tcp_cb, c);
 }
+#endif

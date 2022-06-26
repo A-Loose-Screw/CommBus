@@ -11,6 +11,7 @@
 
 #include "core/nng_impl.h"
 
+#ifdef NNG_PLATFORM_POSIX
 #include <errno.h>
 #include <netinet/in.h>
 #include <string.h>
@@ -410,3 +411,4 @@ nni_tcp_dialer_set(nni_tcp_dialer *d, const char *name, const void *buf,
 {
 	return (nni_setopt(tcp_dialer_options, name, d, buf, sz, t));
 }
+#endif

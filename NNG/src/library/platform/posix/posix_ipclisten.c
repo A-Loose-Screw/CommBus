@@ -10,6 +10,7 @@
 //
 
 #include "core/nng_impl.h"
+#ifdef NNG_PLATFORM_POSIX
 
 #include <errno.h>
 #include <fcntl.h>
@@ -516,3 +517,4 @@ nni_ipc_listener_alloc(nng_stream_listener **lp, const nng_url *url)
 	*lp = (void *) l;
 	return (0);
 }
+#endif

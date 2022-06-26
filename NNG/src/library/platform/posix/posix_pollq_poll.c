@@ -9,6 +9,7 @@
 //
 
 #include "core/nng_impl.h"
+#ifdef NNG_PLATFORM_POSIX
 #include "platform/posix/posix_pollq.h"
 
 #include <errno.h>
@@ -346,3 +347,4 @@ nni_posix_pollq_sysfini(void)
 {
 	nni_posix_pollq_destroy(&nni_posix_global_pollq);
 }
+#endif

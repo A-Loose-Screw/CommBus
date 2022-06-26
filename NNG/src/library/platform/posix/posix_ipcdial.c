@@ -11,6 +11,7 @@
 
 #include "core/nng_impl.h"
 
+#ifdef NNG_PLATFORM_POSIX
 #include <errno.h>
 #include <netinet/in.h>
 #include <string.h>
@@ -315,3 +316,4 @@ nni_ipc_dialer_alloc(nng_stream_dialer **dp, const nng_url *url)
 	*dp = (void *) d;
 	return (0);
 }
+#endif
