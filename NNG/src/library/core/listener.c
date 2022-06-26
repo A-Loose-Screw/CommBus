@@ -211,11 +211,13 @@ nni_listener_create(nni_listener **lp, nni_sock *s, const char *url_str)
 	nni_url      *url;
 
 	if ((rv = nni_url_parse(&url, url_str)) != 0) {
+    printf("Parse");
 		return (rv);
 	}
 	if (((tran = nni_sp_tran_find(url)) == NULL) ||
 	    (tran->tran_listener == NULL)) {
 		nni_url_free(url);
+    printf("find");
 		return (NNG_ENOTSUP);
 	}
 

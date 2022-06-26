@@ -43,6 +43,7 @@ nni_sp_tran_find(nni_url *url)
 		}
 	}
 	nni_rwlock_unlock(&sp_tran_lk);
+  printf("Null");
 	return (NULL);
 }
 

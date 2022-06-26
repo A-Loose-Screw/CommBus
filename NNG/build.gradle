@@ -2,25 +2,6 @@ import static org.apache.tools.ant.taskdefs.condition.Os.*
 
 apply plugin: 'cpp-library'
 
-[FAMILY_WINDOWS, FAMILY_UNIX, FAMILY_MAC].each { osName -> 
-  if (!project.tasks.findByName("$osName")) {
-    tasks.create(osName) {
-      description "Os is ${osName}"
-
-      onlyIf { isFamily(osName) }
-
-      doLast {
-        println "Execution Family: '${it.name}'"
-        println "Family:            ${OS_NAME}"
-        println "Version:           ${OS_VERSION}"
-        println "Architecture:      ${OS_ARCH}"
-      }
-    }
-
-    build.dependsOn(osName)
-  }
-}
-
 library {
   linkage = [Linkage.STATIC]
 
