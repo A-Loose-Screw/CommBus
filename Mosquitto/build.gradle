@@ -11,6 +11,8 @@ library {
   binaries.configureEach {
     compileTask.get().source.from fileTree(dir: "src/c", include: "**/*.c")
 
+    compileTask.get().macros.put("LIBMOSQUITTO_STATIC", null)
+
     if (toolChain instanceof Gcc || toolChain instanceof Clang) {
       compileTask.get().compilerArgs = ["-x", "c", "-std=c11"]
     } else if (toolChain instanceof VisualCpp) {
