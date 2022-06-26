@@ -4,7 +4,7 @@ apply plugin: 'cpp-library'
 
 library {
   dependencies {
-    api project(":Mosquitto")
+    // api project(":NNG")
   }
 
   linkage = [Linkage.STATIC]
@@ -15,9 +15,7 @@ library {
     // if (toolChain instanceof Gcc && targetMachine.operatingSystemFamily.linux) {
     //   linkTask.get().linkerArgs = ["-lpthread"]
     // }
-
-    compileTask.get().macros.put("LIBMOSQUITTO_STATIC", null)
-
+    
     if (toolChain instanceof Gcc || toolChain instanceof Clang) {
       compileTask.get().compilerArgs = ["-std=c++17"]
     } else if (toolChain instanceof VisualCpp) {
