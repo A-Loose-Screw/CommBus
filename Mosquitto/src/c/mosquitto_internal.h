@@ -22,7 +22,7 @@ Contributors:
 
 #include "config.h"
 
-#ifdef WIN32
+#ifdef _WIN32
 #  include <winsock2.h>
 #endif
 
@@ -43,7 +43,7 @@ Contributors:
 #  include <ares.h>
 #endif
 
-#ifdef WIN32
+#ifdef _WIN32
 #	if _MSC_VER < 1600
 		typedef unsigned char uint8_t;
 		typedef unsigned short uint16_t;
@@ -66,7 +66,7 @@ Contributors:
 struct mosquitto_client_msg;
 #endif
 
-#ifdef WIN32
+#ifdef _WIN32
 typedef SOCKET mosq_sock_t;
 #else
 typedef int mosq_sock_t;

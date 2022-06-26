@@ -176,7 +176,7 @@ int packet__queue(struct mosquitto *mosq, struct mosquitto__packet *packet)
 	/* Write a single byte to sockpairW (connected to sockpairR) to break out
 	 * of select() if in threaded mode. */
 	if(mosq->sockpairW != INVALID_SOCKET){
-#ifndef WIN32
+#ifndef _WIN32
 		if(write(mosq->sockpairW, &sockpair_data, 1)){
 		}
 #else
@@ -255,11 +255,11 @@ int packet__write(struct mosquitto *mosq)
 				packet->to_process -= (uint32_t)write_length;
 				packet->pos += (uint32_t)write_length;
 			}else{
-#ifdef WIN32
+#ifdef _WIN32
 				errno = WSAGetLastError();
 #endif
 				if(errno == EAGAIN || errno == COMPAT_EWOULDBLOCK
-#ifdef WIN32
+#ifdef _WIN32
 						|| errno == WSAENOTCONN
 #endif
 						){
@@ -388,7 +388,7 @@ int packet__read(struct mosquitto *mosq)
 			if(read_length == 0){
 				return MOSQ_ERR_CONN_LOST; /* EOF */
 			}
-#ifdef WIN32
+#ifdef _WIN32
 			errno = WSAGetLastError();
 #endif
 			if(errno == EAGAIN || errno == COMPAT_EWOULDBLOCK){
@@ -433,7 +433,7 @@ int packet__read(struct mosquitto *mosq)
 				if(read_length == 0){
 					return MOSQ_ERR_CONN_LOST; /* EOF */
 				}
-#ifdef WIN32
+#ifdef _WIN32
 				errno = WSAGetLastError();
 #endif
 				if(errno == EAGAIN || errno == COMPAT_EWOULDBLOCK){
@@ -510,7 +510,7 @@ int packet__read(struct mosquitto *mosq)
 			mosq->in_packet.to_process -= (uint32_t)read_length;
 			mosq->in_packet.pos += (uint32_t)read_length;
 		}else{
-#ifdef WIN32
+#ifdef _WIN32
 			errno = WSAGetLastError();
 #endif
 			if(errno == EAGAIN || errno == COMPAT_EWOULDBLOCK){

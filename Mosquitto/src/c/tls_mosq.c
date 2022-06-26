@@ -20,7 +20,7 @@ Contributors:
 
 #ifdef WITH_TLS
 
-#ifdef WIN32
+#ifdef _WIN32
 #  include <winsock2.h>
 #  include <ws2tcpip.h>
 #else
@@ -128,7 +128,7 @@ int mosquitto__verify_certificate_hostname(X509 *cert, const char *hostname)
 	int ipv6_ok;
 	int ipv4_ok;
 
-#ifdef WIN32
+#ifdef _WIN32
 	ipv6_ok = InetPton(AF_INET6, hostname, &ipv6_addr);
 	ipv4_ok = InetPton(AF_INET, hostname, &ipv4_addr);
 #else

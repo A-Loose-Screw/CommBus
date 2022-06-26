@@ -18,7 +18,7 @@ Contributors:
 
 #include "config.h"
 
-#ifndef WIN32
+#ifndef _WIN32
 #include <time.h>
 #endif
 
@@ -73,7 +73,7 @@ int mosquitto_loop_stop(struct mosquitto *mosq, bool force)
 	/* Write a single byte to sockpairW (connected to sockpairR) to break out
 	 * of select() if in threaded mode. */
 	if(mosq->sockpairW != INVALID_SOCKET){
-#ifndef WIN32
+#ifndef _WIN32
 		if(write(mosq->sockpairW, &sockpair_data, 1)){
 		}
 #else
@@ -102,7 +102,7 @@ int mosquitto_loop_stop(struct mosquitto *mosq, bool force)
 void *mosquitto__thread_main(void *obj)
 {
 	struct mosquitto *mosq = obj;
-#ifndef WIN32
+#ifndef _WIN32
 	struct timespec ts;
 	ts.tv_sec = 0;
 	ts.tv_nsec = 10000000;
@@ -112,7 +112,7 @@ void *mosquitto__thread_main(void *obj)
 
 	do{
 		if(mosquitto__get_state(mosq) == mosq_cs_new){
-#ifdef WIN32
+#ifdef _WIN32
 			Sleep(10);
 #else
 			nanosleep(&ts, NULL);

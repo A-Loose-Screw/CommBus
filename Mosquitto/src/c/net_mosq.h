@@ -18,7 +18,7 @@ Contributors:
 #ifndef NET_MOSQ_H
 #define NET_MOSQ_H
 
-#ifndef WIN32
+#ifndef _WIN32
 #  include <unistd.h>
 #else
 #  include <winsock2.h>
@@ -31,7 +31,7 @@ typedef SSIZE_T ssize_t;
 #include "mosquitto_internal.h"
 #include "mosquitto.h"
 
-#ifdef WIN32
+#ifdef _WIN32
 #  define COMPAT_CLOSE(a) closesocket(a)
 #  define COMPAT_ECONNRESET WSAECONNRESET
 #  define COMPAT_EINTR WSAEINTR

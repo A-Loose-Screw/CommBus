@@ -31,7 +31,7 @@ extern "C" {
 #endif
 
 
-#ifdef WIN32
+#ifdef _WIN32
 #  ifdef mosquitto_EXPORTS
 #    define libmosq_EXPORT __declspec(dllexport)
 #  else

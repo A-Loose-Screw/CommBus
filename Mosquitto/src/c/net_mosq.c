@@ -24,7 +24,7 @@ Contributors:
 #include <fcntl.h>
 #include <stdio.h>
 #include <string.h>
-#ifndef WIN32
+#ifndef _WIN32
 #define _GNU_SOURCE
 #include <netdb.h>
 #include <netinet/tcp.h>
@@ -130,7 +130,7 @@ UI_METHOD *net__get_ui_method(void)
 
 int net__init(void)
 {
-#ifdef WIN32
+#ifdef _WIN32
 	WSADATA wsaData;
 	if(WSAStartup(MAKEWORD(2,2), &wsaData) != 0){
 		return MOSQ_ERR_UNKNOWN;
@@ -167,7 +167,7 @@ void net__cleanup(void)
 	ares_library_cleanup();
 #endif
 
-#ifdef WIN32
+#ifdef _WIN32
 	WSACleanup();
 #endif
 }
@@ -352,7 +352,7 @@ int net__try_connect_step2(struct mosquitto *mosq, uint16_t port, mosq_sock_t *s
 		}
 
 		rc = connect(*sock, rp->ai_addr, rp->ai_addrlen);
-#ifdef WIN32
+#ifdef _WIN32
 		errno = WSAGetLastError();
 #endif
 		if(rc == 0 || errno == EINPROGRESS || errno == COMPAT_EWOULDBLOCK){
@@ -452,7 +452,7 @@ static int net__try_connect_tcp(const char *host, uint16_t port, mosq_sock_t *so
 		}
 
 		rc = connect(*sock, rp->ai_addr, rp->ai_addrlen);
-#ifdef WIN32
+#ifdef _WIN32
 		errno = WSAGetLastError();
 #endif
 		if(rc == 0 || errno == EINPROGRESS || errno == COMPAT_EWOULDBLOCK){
@@ -983,7 +983,7 @@ static int net__handle_ssl(struct mosquitto* mosq, int ret)
 		errno = EPROTO;
 	}
 	ERR_clear_error();
-#ifdef WIN32
+#ifdef _WIN32
 	WSASetLastError(errno);
 #endif
 
@@ -1010,7 +1010,7 @@ ssize_t net__read(struct mosquitto *mosq, void *buf, size_t count)
 
 #endif
 
-#ifndef WIN32
+#ifndef _WIN32
 	return read(mosq->sock, buf, count);
 #else
 	return recv(mosq->sock, buf, count, 0);
@@ -1041,7 +1041,7 @@ ssize_t net__write(struct mosquitto *mosq, const void *buf, size_t count)
 		/* Call normal write/send */
 #endif
 
-#ifndef WIN32
+#ifndef _WIN32
 	return write(mosq->sock, buf, count);
 #else
 	return send(mosq->sock, buf, count, 0);
@@ -1055,7 +1055,7 @@ ssize_t net__write(struct mosquitto *mosq, const void *buf, size_t count)
 
 int net__socket_nonblock(mosq_sock_t *sock)
 {
-#ifndef WIN32
+#ifndef _WIN32
 	int opt;
 	/* Set non-blocking */
 	opt = fcntl(*sock, F_GETFL, 0);
@@ -1085,7 +1085,7 @@ int net__socket_nonblock(mosq_sock_t *sock)
 #ifndef WITH_BROKER
 int net__socketpair(mosq_sock_t *pairR, mosq_sock_t *pairW)
 {
-#ifdef WIN32
+#ifdef _WIN32
 	int family[2] = {AF_INET, AF_INET6};
 	int i;
 	struct sockaddr_storage ss;
@@ -1156,7 +1156,7 @@ int net__socketpair(mosq_sock_t *pairR, mosq_sock_t *pairW)
 			continue;
 		}
 		if(connect(spR, (struct sockaddr *)&ss, ss_len) < 0){
-#ifdef WIN32
+#ifdef _WIN32
 			errno = WSAGetLastError();
 #endif
 			if(errno != EINPROGRESS && errno != COMPAT_EWOULDBLOCK){
@@ -1167,7 +1167,7 @@ int net__socketpair(mosq_sock_t *pairR, mosq_sock_t *pairW)
 		}
 		spW = accept(listensock, NULL, 0);
 		if(spW == -1){
-#ifdef WIN32
+#ifdef _WIN32
 			errno = WSAGetLastError();
 #endif
 			if(errno != EINPROGRESS && errno != COMPAT_EWOULDBLOCK){

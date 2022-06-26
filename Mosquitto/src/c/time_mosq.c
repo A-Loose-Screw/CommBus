@@ -23,7 +23,7 @@ Contributors:
 #include <mach/mach_time.h>
 #endif
 
-#ifdef WIN32
+#ifdef _WIN32
 #if !(defined(_MSC_VER) && _MSC_VER <= 1500)
 #  define _WIN32_WINNT _WIN32_WINNT_VISTA
 #endif
@@ -38,7 +38,7 @@ Contributors:
 
 time_t mosquitto_time(void)
 {
-#ifdef WIN32
+#ifdef _WIN32
 	return GetTickCount64()/1000;
 #elif _POSIX_TIMERS>0 && defined(_POSIX_MONOTONIC_CLOCK)
 	struct timespec tp;

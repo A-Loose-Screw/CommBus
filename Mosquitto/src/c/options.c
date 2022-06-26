@@ -18,14 +18,14 @@ Contributors:
 
 #include "config.h"
 
-#ifndef WIN32
+#ifndef _WIN32
 #  include <strings.h>
 #endif
 
 #include <string.h>
 
 #ifdef WITH_TLS
-#  ifdef WIN32
+#  ifdef _WIN32
 #    include <winsock2.h>
 #  endif
 #  include <openssl/engine.h>

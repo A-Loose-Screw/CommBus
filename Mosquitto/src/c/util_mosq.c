@@ -22,7 +22,7 @@ Contributors:
 #include <ctype.h>
 #include <string.h>
 
-#ifdef WIN32
+#ifdef _WIN32
 #  include <winsock2.h>
 #  include <aclapi.h>
 #  include <io.h>
@@ -249,7 +249,7 @@ int util__random_bytes(void *bytes, int count)
 	if(getrandom(bytes, (size_t)count, 0) == count){
 		rc = MOSQ_ERR_SUCCESS;
 	}
-#elif defined(WIN32)
+#elif defined(_WIN32)
 	HCRYPTPROV provider;
 
 	if(!CryptAcquireContext(&provider, NULL, NULL, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT)){

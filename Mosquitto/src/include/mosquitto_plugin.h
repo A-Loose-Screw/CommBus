@@ -66,7 +66,7 @@ struct mosquitto_acl_msg {
 	bool retain;
 };
 
-#ifdef WIN32
+#ifdef _WIN32
 #  define mosq_plugin_EXPORT __declspec(dllexport)
 #else
 #  define mosq_plugin_EXPORT

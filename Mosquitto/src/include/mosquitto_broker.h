@@ -28,7 +28,7 @@ Contributors:
 extern "C" {
 #endif
 
-#if defined(WIN32) && defined(mosquitto_EXPORTS)
+#if defined(_WIN32) && defined(mosquitto_EXPORTS)
 #	define mosq_EXPORT  __declspec(dllexport)
 #else
 #	define mosq_EXPORT

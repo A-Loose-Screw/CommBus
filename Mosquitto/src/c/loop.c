@@ -19,7 +19,7 @@ Contributors:
 #include "config.h"
 
 #include <errno.h>
-#ifndef WIN32
+#ifndef _WIN32
 #include <sys/select.h>
 #include <time.h>
 #endif
@@ -32,7 +32,7 @@ Contributors:
 #include "tls_mosq.h"
 #include "util_mosq.h"
 
-#if !defined(WIN32) && !defined(__SYMBIAN32__) && !defined(__QNX__)
+#if !defined(_WIN32) && !defined(__SYMBIAN32__) && !defined(__QNX__)
 #define HAVE_PSELECT
 #endif
 
@@ -52,7 +52,7 @@ int mosquitto_loop(struct mosquitto *mosq, int timeout, int max_packets)
 	time_t timeout_ms;
 
 	if(!mosq || max_packets < 1) return MOSQ_ERR_INVAL;
-#ifndef WIN32
+#ifndef _WIN32
 	if(mosq->sock >= FD_SETSIZE || mosq->sockpairR >= FD_SETSIZE){
 		return MOSQ_ERR_INVAL;
 	}
@@ -137,7 +137,7 @@ int mosquitto_loop(struct mosquitto *mosq, int timeout, int max_packets)
 	fdcount = select(maxfd+1, &readfds, &writefds, NULL, &local_timeout);
 #endif
 	if(fdcount == -1){
-#ifdef WIN32
+#ifdef _WIN32
 		errno = WSAGetLastError();
 #endif
 		if(errno == EINTR){
@@ -154,7 +154,7 @@ int mosquitto_loop(struct mosquitto *mosq, int timeout, int max_packets)
 				}
 			}
 			if(mosq->sockpairR != INVALID_SOCKET && FD_ISSET(mosq->sockpairR, &readfds)){
-#ifndef WIN32
+#ifndef _WIN32
 				if(read(mosq->sockpairR, &pairbuf, 1) == 0){
 				}
 #else
@@ -203,7 +203,7 @@ static int interruptible_sleep(struct mosquitto *mosq, time_t reconnect_delay)
 	char pairbuf;
 	int maxfd = 0;
 
-#ifndef WIN32
+#ifndef _WIN32
 	while(mosq->sockpairR != INVALID_SOCKET && read(mosq->sockpairR, &pairbuf, 1) > 0);
 #else
 	while(mosq->sockpairR != INVALID_SOCKET && recv(mosq->sockpairR, &pairbuf, 1, 0) > 0);
@@ -229,7 +229,7 @@ static int interruptible_sleep(struct mosquitto *mosq, time_t reconnect_delay)
 	fdcount = select(maxfd+1, &readfds, NULL, NULL, &local_timeout);
 #endif
 	if(fdcount == -1){
-#ifdef WIN32
+#ifdef _WIN32
 		errno = WSAGetLastError();
 #endif
 		if(errno == EINTR){
@@ -238,7 +238,7 @@ static int interruptible_sleep(struct mosquitto *mosq, time_t reconnect_delay)
 			return MOSQ_ERR_ERRNO;
 		}
 	}else if(mosq->sockpairR != INVALID_SOCKET && FD_ISSET(mosq->sockpairR, &readfds)){
-#ifndef WIN32
+#ifndef _WIN32
 		if(read(mosq->sockpairR, &pairbuf, 1) == 0){
 		}
 #else

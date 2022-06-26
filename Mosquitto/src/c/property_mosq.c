@@ -22,7 +22,7 @@ Contributors:
 #include <errno.h>
 #include <string.h>
 
-#ifndef WIN32
+#ifndef _WIN32
 #  include <strings.h>
 #endif
 

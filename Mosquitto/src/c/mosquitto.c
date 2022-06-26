@@ -21,7 +21,7 @@ Contributors:
 #include <errno.h>
 #include <signal.h>
 #include <string.h>
-#ifndef WIN32
+#ifndef _WIN32
 #include <sys/time.h>
 #include <strings.h>
 #endif
@@ -57,7 +57,7 @@ int mosquitto_lib_init(void)
 	int rc;
 
 	if (init_refcount == 0) {
-#ifdef WIN32
+#ifdef _WIN32
 		srand((unsigned int)GetTickCount64());
 #elif _POSIX_TIMERS>0 && defined(_POSIX_MONOTONIC_CLOCK)
 		struct timespec tp;
@@ -109,7 +109,7 @@ struct mosquitto *mosquitto_new(const char *id, bool clean_start, void *userdata
 		return NULL;
 	}
 
-#ifndef WIN32
+#ifndef _WIN32
 	signal(SIGPIPE, SIG_IGN);
 #endif
 
