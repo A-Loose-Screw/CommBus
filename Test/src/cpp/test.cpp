@@ -9,7 +9,10 @@
 // #define SOCKET_BUS_ADDR_INPROC "inproc://bus"
 #define SOCKET_BUS_ADDR "inproc://bus"
 
-int main() try {
+// #define CLIENT_RECV_IMPL(x,y) try {y=x;} catch(const std::exception& e) {std::cerr << e.what() << '\n';}
+// #define CLIENT_RECV(x)  try {x;} catch(const std::exception& e) {std::cerr << e.what() << '\n';}
+
+int main() {
   // create a socket for the rep protocol
   // auto bus = nng::bus::open();
   // bus.listen(SOCKET_BUS_ADDR);
@@ -37,21 +40,42 @@ int main() try {
   nng::set_opt_send_timeout(server, 100);
 
   nng::sub::set_opt_subscribe(client1, "yes");
-  // nng::sub::set_opt_subscribe(client2, "no");
+  nng::sub::set_opt_subscribe(client2, "no");
 
   client1.dial(SOCKET_BUS_ADDR);
-  // client2.dial(SOCKET_BUS_ADDR);
+  client2.dial(SOCKET_BUS_ADDR);
 
   server.send("yes");
 
-  std::cout << "Client 1 recv " << client1.recv().data<char>() << std::endl;
-  // std::cout << "Client 2 recv " << client2.recv().data<char>() << std::endl;
+  nng::buffer buffer1;
+  try {
+    buffer1 = client1.recv();
+  } catch(const std::exception& e) {
+    // std::cerr << e.what() << '\n';
+    std::cout << e.what() << std::endl;
+  }
+
+  nng::buffer buffer2;
+  try {
+    buffer2 = client2.recv();
+  } catch(const std::exception& e) {
+    // std::cerr << e.what() << '\n';
+    std::cout << e.what() << std::endl;
+  }
+  
+  if (buffer1.data() != NULL) {
+    std::cout << "Client 1 recv " << buffer1.data<char>() << std::endl;
+  }
+
+  if (buffer2.data() != NULL) {
+    std::cout << "Client 2 recv " << buffer2.data<char>() << std::endl;
+  }
 
   return 0;
 }
-catch( const nng::exception& e ) {
-  // who() is the name of the nng function that produced the error
-  // what() is a description of the error code
-  printf( "%s: %s\n", e.who(), e.what() );
-  return 1;
-}
+// catch( const nng::exception& e ) {
+//   // who() is the name of the nng function that produced the error
+//   // what() is a description of the error code
+//   printf( "%s: %s\n", e.who(), e.what() );
+//   return 1;
+// }
