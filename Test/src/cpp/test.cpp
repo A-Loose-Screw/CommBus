@@ -29,6 +29,7 @@ int main() {
    * 
    */
   auto server = nng::pub::open();
+  // server.dial(SOCKET_BUS_ADDR);
   server.listen(SOCKET_BUS_ADDR);
 
   auto client1 = nng::sub::open();
