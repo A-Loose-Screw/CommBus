@@ -1,76 +1,84 @@
 #include <iostream>
 #include <thread>
 #include <chrono>
+
+// #include "nng/compat/nanomsg/nn.h"
+// #include "nng/compat/nanomsg/bus.h"
 #include "CommBus.h"
 
-#ifdef COMMBUS_PLATFORM_UNIX
-#include <unistd.h>
-#endif
+// #define SOCKET_BUS_ADDR_INPROC "inproc://bus"
+#define SOCKET_BUS_ADDR "inproc://bus"
 
-void client_sender() {
-  std::cout << "Client Sender Starting" << std::endl;
-  modbus_t *mb;
-  uint16_t tab_reg[2];
-
-
-  mb = modbus_new_tcp("127.0.0.1", 1502);
-  // modbus_set_debug(mb, true);
-
-  while (modbus_connect(mb) == -1) {
-    fprintf(stderr, "Connection failed: %s\n", modbus_strerror(errno));
-  }
-
-  int count = 0;
-
-  while (true) {
-    modbus_set_float_abcd(10.3f, tab_reg);
-    if (modbus_write_registers(mb, 2, 2, tab_reg) == -1) {
-      // std::cout << "Reconnecting" << std::endl;
-      fprintf(stderr, "Test side: Connection failed: %s\n", modbus_strerror(errno));
-      modbus_close(mb);
-      modbus_flush(mb);
-      modbus_free(mb);
-      mb = modbus_new_tcp("127.0.0.1", 1502);
-      std::this_thread::sleep_for(std::chrono::seconds(2));
-      if (modbus_connect(mb) == -1) {
-        fprintf(stderr, "Test side: Reconnect failed: %s\n", modbus_strerror(errno));
-      }
-    } else {
-      std::cout << "Write data" << std::endl;
-    }
-
-    if (count > 5) {
-      std::cout << "Thread wait triggered" << std::endl;
-      std::this_thread::sleep_for(std::chrono::seconds(5));
-      count = 0;
-    }
-
-    count++;
-  }
-  
-
-  modbus_close(mb);
-  modbus_free(mb);
-  std::cout << "Client Sender Complete" << std::endl;
-}
+// #define CLIENT_RECV_IMPL(x,y) try {y=x;} catch(const std::exception& e) {std::cerr << e.what() << '\n';}
+// #define CLIENT_RECV(x)  try {x;} catch(const std::exception& e) {std::cerr << e.what() << '\n';}
 
 int main() {
-  std::cout << "Starting CommBus test..." << std::endl;
+  // create a socket for the rep protocol
+  // auto bus = nng::bus::open();
+  // bus.listen(SOCKET_BUS_ADDR);
 
-  CommBus::Server server;
-  server.start();
+  // auto bus1 = nng::bus::open();
+  // bus1.dial(SOCKET_BUS_ADDR);
 
-  std::this_thread::sleep_for(std::chrono::seconds(5));
-  CommBus::Client client("127.0.0.1");
-  client.start();
+  // bus1.send("Hello there");
 
-  // client_sender();
+  // std::cout << bus.recv().data<char>() << std::endl;
+
+  /**
+   * @brief PubSub
+   * 
+   */
+  auto server = nng::pub::open();
+  // server.dial(SOCKET_BUS_ADDR);
+  server.listen(SOCKET_BUS_ADDR);
+
+  auto client1 = nng::sub::open();
+  auto client2 = nng::sub::open();
+
+  nng::set_opt_recv_timeout(client1, 100);
+  nng::set_opt_recv_timeout(client2, 100);
+
+  // nng::set_opt_recv_timeout(server, 100);
+  // nng::set_opt_send_timeout(server, 100);
+
+  nng::sub::set_opt_subscribe(client1, {"DATE:", 5});
+  nng::sub::set_opt_subscribe(client2, {"TIME:", 5});
+
+  client1.dial(SOCKET_BUS_ADDR);
+  client2.dial(SOCKET_BUS_ADDR);
+
+  server.send("DATE: it's actually not a date");
+  server.send("TIME: but more");
+
+  nng::buffer buffer1;
+  try {
+    buffer1 = client1.recv(NNG_FLAG_NONBLOCK);
+    if (buffer1.data() != NULL) {
+      std::cout << "Client 1 recv " << buffer1.data<char>() << std::endl;
+    }
+  } catch(const std::exception& e) {
+    // std::cerr << e.what() << '\n';
+    std::cout << e.what() << std::endl;
+  }
+
+  nng::buffer buffer2;
+  try {
+    buffer2 = client2.recv(NNG_FLAG_NONBLOCK);
+    if (buffer2.data() != NULL) {
+      std::cout << "Client 2 recv " << buffer2.data<char>() << std::endl;
+    }
+  } catch(const std::exception& e) {
+    // std::cerr << e.what() << '\n';
+    std::cout << e.what() << std::endl;
+  }
   
-  std::this_thread::sleep_for(std::chrono::seconds(5));
-  #ifndef COMMBUS_TEST
-  while (true);
-  #endif
 
-  std::cout << "Program End" << std::endl;
+
   return 0;
 }
+// catch( const nng::exception& e ) {
+//   // who() is the name of the nng function that produced the error
+//   // what() is a description of the error code
+//   printf( "%s: %s\n", e.who(), e.what() );
+//   return 1;
+// }

@@ -1,5 +1,7 @@
 
+include "MbedTLS"
+include "NNG"
 include 'CommBus'
 include 'Test'
 
-rootProject.name = 'CommBust'
+rootProject.name = 'CommBus'
