@@ -14,13 +14,42 @@
 // #define CLIENT_RECV(x)  try {x;} catch(const std::exception& e) {std::cerr << e.what() << '\n';}
 
 int main() {
-  CommBus::Model::Table table("Table");
+  CommBus::Models::Model model;
 
-  table.getEntry("Entry1")->set("I am the entry");
+  model.getTable("HID")->getEntry("Xbox_X")->set(0.3);
+  auto xbox = model.getTable("HID")->getEntry("Entry");
 
-  std::cout << table.getEntry("Entry2")->get("") << std::endl;;
+  xbox->set(3.1);
+  std::cout << "Xbox: " << xbox->get(0.0) << std::endl;
 
-  std::cout << table.getSize() << std::endl;
+  xbox->set('c');
+  std::cout << "Xbox: " << xbox->get(' ') << std::endl;
+
+  xbox->set(true);
+  std::cout << "Xbox: " << xbox->get(false) << std::endl;
+
+  xbox->set(3);
+  std::cout << "Xbox: " << xbox->get(0) << std::endl;
+
+  xbox->set((std::string)"Test");
+  std::cout << "Xbox: " << xbox->get((std::string)"") << std::endl;
+
+  xbox->set("Test");
+  std::cout << "Xbox: " << xbox->get("") << std::endl;
+
+  xbox->set(std::vector<int>{3,2,1});
+  std::cout << "Xbox: " << xbox->get(std::vector<int>{0})[0] << std::endl;
+
+  xbox->set(std::vector<double>{3.2,2.2,1});
+  std::cout << "Xbox: " << xbox->get(std::vector<double>{0})[0] << std::endl;
+
+  xbox->set(std::vector<bool>{true,false,false});
+  std::cout << "Xbox: " << xbox->get(std::vector<bool>{0})[0] << std::endl;
+  
+
+  // model.getTable("HID")->getEntry("Xbox_X")->set(0.3);
+  // std::cout << "Type: " << (int)model.getTable("HID")->getEntry("Xbox_X")->getType() << std::endl;
+  // std::cout << model.getTable("HID")->getEntry("Xbox_X")->get(0.0) << std::endl;
   /**
    * @brief PubSub
    * 

@@ -1,6 +1,6 @@
 #include "Model/Table.h"
 
-using namespace CommBus::Model;
+using namespace CommBus::Models;
 
 Table::Table(std::string name) : _name(name) {}
 

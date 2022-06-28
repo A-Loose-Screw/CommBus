@@ -2,11 +2,10 @@
 #define COMMBUS_TABLE_H
 
 #include <string>
-
 #include "Entry.h"
 
 namespace CommBus {
-namespace Model {
+namespace Models {
 
   /**
    * @brief A table is a one dimensional array which holds entries.

@@ -8,7 +8,7 @@
 #include "Data/DataValue.h"
 
 namespace CommBus {
-namespace Model {
+namespace Models {
 
   /**
    * @brief An Entry is an data entry to a table. And can hold *one* the following types
@@ -58,24 +58,24 @@ namespace Model {
     std::variant<
       char,
       int,
-      float,
+      double,
       bool,
       const char *,
       std::string,
       std::vector<int>,
-      std::vector<float>,
+      std::vector<double>,
       std::vector<bool>
       > getVariant() {
       switch (_dt->type) {
         case Data::DataClass_T::COMMBUS_DATA_CHAR_T: return _dt->COMMBUS_DATA_CHAR_S;
         case Data::DataClass_T::COMMBUS_DATA_INT_T: return _dt->COMMBUS_DATA_INT_S;
-        case Data::DataClass_T::COMMBUS_DATA_FLOAT_T: return _dt->COMMBUS_DATA_FLOAT_S;
+        case Data::DataClass_T::COMMBUS_DATA_DOUBLE_T: return _dt->COMMBUS_DATA_DOUBLE_S;
         case Data::DataClass_T::COMMBUS_DATA_BOOL_T: return _dt->COMMBUS_DATA_BOOL_S;
 
         case Data::DataClass_T::COMMBUS_DATA_RAW_T: return _dt->COMMBUS_DATA_RAW_S.c_str();
         case Data::DataClass_T::COMMBUS_DATA_STRING_T: return _dt->COMMBUS_DATA_STRING_S;
         case Data::DataClass_T::COMMBUS_DATA_INT_ARR_T: return _dt->COMMBUS_DATA_INT_ARR_S;
-        case Data::DataClass_T::COMMBUS_DATA_FLOAT_ARR_T: return _dt->COMMBUS_DATA_FLOAT_ARR_S;
+        case Data::DataClass_T::COMMBUS_DATA_DOUBLE_ARR_T: return _dt->COMMBUS_DATA_DOUBLE_ARR_S;
         case Data::DataClass_T::COMMBUS_DATA_BOOL_ARR_T: return _dt->COMMBUS_DATA_BOOL_ARR_S;
       }
     }
@@ -92,7 +92,7 @@ namespace Model {
       if (_dt == nullptr) {
         return default_value;
       }
-      
+
       try {
         return std::get<T>(getVariant());
       } catch (std::bad_variant_access&) {

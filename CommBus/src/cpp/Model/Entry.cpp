@@ -1,6 +1,6 @@
 #include "Model/Entry.h"
 
-using namespace CommBus::Model;
+using namespace CommBus::Models;
 
 Entry::Entry(std::string name) : _name(name) {}
 

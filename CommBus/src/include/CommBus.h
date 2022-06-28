@@ -12,5 +12,6 @@
 
 #include "Model/Table.h"
 #include "Model/Entry.h"
+#include "Model/Model.h"
 
 #endif
