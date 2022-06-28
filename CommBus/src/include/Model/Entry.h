@@ -11,13 +11,14 @@ namespace CommBus {
 namespace Model {
 
   /**
-   * @brief An Entry is an entry to a table. And can hold the following types
+   * @brief An Entry is an data entry to a table. And can hold *one* the following types
    * 
    * @type: Char
    * @type: Int
    * @type: Float
    * @type: Boolean
    * @type: String
+   * @type: Char array/Raw
    * @type: Int Array
    * @type: Float Array
    * @type: Boolean Array
@@ -26,7 +27,7 @@ namespace Model {
    */
   class Entry {
    public:
-    Entry(std::string name) : _name(name) {}
+    Entry(std::string name);
 
     /**
      * @brief Set entry value
@@ -36,8 +37,7 @@ namespace Model {
      */
     template<typename T>
     void set(T v) {
-      _dt = std::make_shared<Data::DataValue>(v);
-      std::cout << "Created type: " << (int)_dt->type << std::endl;
+      _dt = std::make_unique<Data::DataValue>(v);
     }
 
     /**
@@ -61,17 +61,19 @@ namespace Model {
       float,
       bool,
       const char *,
+      std::string,
       std::vector<int>,
       std::vector<float>,
       std::vector<bool>
-    > getVariant() {
+      > getVariant() {
       switch (_dt->type) {
         case Data::DataClass_T::COMMBUS_DATA_CHAR_T: return _dt->COMMBUS_DATA_CHAR_S;
         case Data::DataClass_T::COMMBUS_DATA_INT_T: return _dt->COMMBUS_DATA_INT_S;
         case Data::DataClass_T::COMMBUS_DATA_FLOAT_T: return _dt->COMMBUS_DATA_FLOAT_S;
         case Data::DataClass_T::COMMBUS_DATA_BOOL_T: return _dt->COMMBUS_DATA_BOOL_S;
 
-        case Data::DataClass_T::COMMBUS_DATA_STRING_T: return _dt->COMMBUS_DATA_STRING_S.c_str();
+        case Data::DataClass_T::COMMBUS_DATA_RAW_T: return _dt->COMMBUS_DATA_RAW_S.c_str();
+        case Data::DataClass_T::COMMBUS_DATA_STRING_T: return _dt->COMMBUS_DATA_STRING_S;
         case Data::DataClass_T::COMMBUS_DATA_INT_ARR_T: return _dt->COMMBUS_DATA_INT_ARR_S;
         case Data::DataClass_T::COMMBUS_DATA_FLOAT_ARR_T: return _dt->COMMBUS_DATA_FLOAT_ARR_S;
         case Data::DataClass_T::COMMBUS_DATA_BOOL_ARR_T: return _dt->COMMBUS_DATA_BOOL_ARR_S;
@@ -79,7 +81,7 @@ namespace Model {
     }
 
     /**
-     * @brief Get using std::get_if
+     * @brief Get using std::get
      * 
      * @tparam T 
      * @param default_value 
@@ -88,7 +90,7 @@ namespace Model {
     template<typename T>
     T get(T default_value) {
       try {
-        return std::get<T>(getVariant()); 
+        return std::get<T>(getVariant());
       } catch (std::bad_variant_access&) {
         return default_value;
       }
@@ -99,14 +101,17 @@ namespace Model {
      * 
      * @return Data::DataClass_T 
      */
-    Data::DataClass_T getType() {
-      return _dt->type;
-    }
-    
-    
+    Data::DataClass_T getType();
+
+    /**
+     * @brief Get the Name object
+     * 
+     * @return std::string 
+     */
+    std::string getName();
 
    private:
-    std::shared_ptr<Data::DataValue> _dt;
+    std::unique_ptr<Data::DataValue> _dt;
     std::string _name;
   };
 }

@@ -28,6 +28,7 @@ namespace Data {
       float                       COMMBUS_DATA_FLOAT_S; 
       bool                        COMMBUS_DATA_BOOL_S;
 
+      std::string                 COMMBUS_DATA_RAW_S;
       std::string                 COMMBUS_DATA_STRING_S;
       std::vector<int>            COMMBUS_DATA_INT_ARR_S;
       std::vector<float>          COMMBUS_DATA_FLOAT_ARR_S;
@@ -40,8 +41,8 @@ namespace Data {
     DataValue(const bool &v) :            COMMBUS_DATA_BOOL_S(v), type(DataClass_T::COMMBUS_DATA_BOOL_T) {}
     DataValue(const double &v) :          COMMBUS_DATA_FLOAT_S((float)v), type(DataClass_T::COMMBUS_DATA_FLOAT_T) {} // double catch
 
-    DataValue(const char* v) :            COMMBUS_DATA_STRING_S(std::move(v)), type(DataClass_T::COMMBUS_DATA_STRING_T) {}
-    DataValue(std::string v) :            COMMBUS_DATA_STRING_S(std::move(v)), type(DataClass_T::COMMBUS_DATA_STRING_T) {} // string catch
+    DataValue(const char* v) :            COMMBUS_DATA_RAW_S(std::move(v)), type(DataClass_T::COMMBUS_DATA_RAW_T) {}
+    DataValue(std::string &&v) :          COMMBUS_DATA_STRING_S(std::move(v)), type(DataClass_T::COMMBUS_DATA_STRING_T) {}
     DataValue(std::vector<int> &&v) :     COMMBUS_DATA_INT_ARR_S(std::move(v)), type(DataClass_T::COMMBUS_DATA_INT_ARR_T) {}
     DataValue(std::vector<float> &&v) :   COMMBUS_DATA_FLOAT_ARR_S(std::move(v)), type(DataClass_T::COMMBUS_DATA_FLOAT_ARR_T) {}
     DataValue(std::vector<bool> &&v) :    COMMBUS_DATA_BOOL_ARR_S(std::move(v)), type(DataClass_T::COMMBUS_DATA_BOOL_ARR_T) {}

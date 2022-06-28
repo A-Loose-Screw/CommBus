@@ -2,14 +2,12 @@
 
 using namespace CommBus::Model;
 
-// Entry::Entry(std::string &name) {
-//   _name = name;
-// }
+Entry::Entry(std::string name) : _name(name) {}
 
-// void Entry::set(Data::DataConstruct data, Data::DataClass type) {
+Data::DataClass_T Entry::getType() {
+  return _dt->type;
+}
 
-// }
-
-// void Entry::get() {
-//   return 
-// }
+std::string Entry::getName() {
+  return _name;
+}
