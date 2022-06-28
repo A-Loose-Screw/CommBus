@@ -4,26 +4,13 @@
 #include <string>
 #include <vector>
 
+#include "Classification.h"
+
 // #define SWITCH_GET(type, )
 
 namespace CommBus {
 namespace Model {
 namespace Data {
-
-  /**
-   * @brief Classification for all supported datatypes in the model
-   * 
-   */
-  enum class DataClass {
-    COMMBUS_DATA_CHAR_T         = 0,
-    COMMBUS_DATA_INT_T          = 1,
-    COMMBUS_DATA_FLOAT_T        = 2,
-    COMMBUS_DATA_BOOL_T         = 3,
-    COMMBUS_DATA_STRING_T       = 4,
-    COMMBUS_DATA_INT_ARR_T      = 5,
-    COMMBUS_DATA_FLOAT_ARR_T    = 6,
-    COMMBUS_DATA_BOOL_ARR_T     = 7
-  };
 
   /**
    * @brief Pure storage construct for specified data
@@ -45,7 +32,7 @@ namespace Data {
    * 
    */
   struct Datagram {
-    DataClass     type;
+    // DataClass     type;
     DataConstruct data;
   };
 

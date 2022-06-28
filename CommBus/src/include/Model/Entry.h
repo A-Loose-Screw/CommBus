@@ -26,10 +26,10 @@ namespace Model {
    public:
     Entry(std::string &name);
 
-    void set(Data::DataConstruct data, Data::DataClass type) {
-      _dt.data = data;
-      _dt.type = type;
-    }
+    // void set(Data::DataConstruct data, Data::DataClass type) {
+    //   _dt.data = data;
+    //   _dt.type = type;
+    // }
 
     void setChar(char data);
     void setInt(int data);
