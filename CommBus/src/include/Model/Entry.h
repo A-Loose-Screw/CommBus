@@ -89,6 +89,10 @@ namespace Model {
      */
     template<typename T>
     T get(T default_value) {
+      if (_dt == nullptr) {
+        return default_value;
+      }
+      
       try {
         return std::get<T>(getVariant());
       } catch (std::bad_variant_access&) {
