@@ -8,7 +8,7 @@ library {
   }
 
   linkage = [Linkage.STATIC]
-  source.from fileTree(dir: "src/cpp", include: "**/*.cpp")
+  source.from file("src/cpp")
   publicHeaders.from file("src/include")
 
   binaries.configureEach {
