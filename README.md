@@ -1,7 +1,7 @@
 # CommBus
 Communication bus network. Using the nanomsg pub-sub protocol https://nanomsg.org/. For communication with distributed dictionary networks
 
-MQTT -network
+- Note this library is a C++17 implementation
 
 [![Build Status](https://dev.azure.com/ConnorBuchel0890/A-Loose-Screw/_apis/build/status/A-Loose-Screw.CommBus?branchName=master)](https://dev.azure.com/ConnorBuchel0890/A-Loose-Screw/_build/latest?definitionId=23&branchName=master)
 

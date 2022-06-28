@@ -14,7 +14,7 @@ library {
   binaries.configureEach {
     
     if (toolChain instanceof Gcc || toolChain instanceof Clang) {
-      compileTask.get().compilerArgs = ["-std=c++17", "-lpthread"]
+      compileTask.get().compilerArgs = ["-std=c++17", "-lpthread", "-g"]
     } else if (toolChain instanceof VisualCpp) {
       compileTask.get().compilerArgs = ["/std:c++17"]
     }

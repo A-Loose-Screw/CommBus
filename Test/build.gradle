@@ -16,8 +16,11 @@ application {
     }
 
     if (toolChain instanceof Gcc || toolChain instanceof Clang) {
-      compileTask.get().compilerArgs = ["-std=c++17"]
+      compileTask.get().compilerArgs = ["-std=c++17", "-lpthread", "-g"]
+    } else if (toolChain instanceof VisualCpp) {
+      compileTask.get().compilerArgs = ["/std:c++17"]
     }
+
 
     if (project.hasProperty('test')) {
       println("CommBus Test Mode")
