@@ -1,10 +1,12 @@
 #include <iostream>
 #include <thread>
+#include <string>
 #include <chrono>
 
 // #include "nng/compat/nanomsg/nn.h"
 // #include "nng/compat/nanomsg/bus.h"
 #include "CommBus.h"
+#include "Model/Entry.h"
 #include "Model/Data/DataValue.h"
 
 // #define SOCKET_BUS_ADDR_INPROC "inproc://bus"
@@ -18,6 +20,16 @@ int main() {
   std::cout << (int)value.type << std::endl;
   std::cout << "bytes: " << sizeof(value) << std::endl;
   std::cout << value.COMMBUS_DATA_STRING_S << std::endl;
+
+  CommBus::Model::Entry entry("robot");
+
+  entry.set(0.5);
+  entry.set("test");
+
+  std::cout << entry.get("") << std::endl;
+
+  // auto v = std::get<std::string>(entry.get());
+  // std::cout << v << std::endl;
 
   /**
    * @brief PubSub

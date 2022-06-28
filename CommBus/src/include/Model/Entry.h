@@ -3,7 +3,9 @@
 
 #include <string>
 #include <memory>
-#include "Data/Data.h"
+#include <iostream>
+#include <variant>
+#include "Data/DataValue.h"
 
 namespace CommBus {
 namespace Model {
@@ -24,30 +26,87 @@ namespace Model {
    */
   class Entry {
    public:
-    Entry(std::string &name);
+    Entry(std::string name) : _name(name) {}
 
-    // void set(Data::DataConstruct data, Data::DataClass type) {
-    //   _dt.data = data;
-    //   _dt.type = type;
-    // }
+    /**
+     * @brief Set entry value
+     * 
+     * @tparam T 
+     * @param v 
+     */
+    template<typename T>
+    void set(T v) {
+      _dt = std::make_shared<Data::DataValue>(v);
+      std::cout << "Created type: " << (int)_dt->type << std::endl;
+    }
 
-    void setChar(char data);
-    void setInt(int data);
-    void setFloat(float data);
-    void setBool(bool data);
-    void setString(std::string data);
-    void setIntArr(std::vector<int> data);
-    void setFloatArr(std::vector<float> data);
-    void setBool(std::vector<bool> data);
+    /**
+     * @brief Main getter for data
+     * 
+     * @return std::variant<
+     * char,
+     * int,
+     * float,
+     * bool,
+     * std::string,
+     * const char*,
+     * std::vector<int>,
+     * std::vector<float>,
+     * std::vector<bool>
+     * > 
+     */
+    std::variant<
+      char,
+      int,
+      float,
+      bool,
+      const char *,
+      std::vector<int>,
+      std::vector<float>,
+      std::vector<bool>
+    > getVariant() {
+      switch (_dt->type) {
+        case Data::DataClass_T::COMMBUS_DATA_CHAR_T: return _dt->COMMBUS_DATA_CHAR_S;
+        case Data::DataClass_T::COMMBUS_DATA_INT_T: return _dt->COMMBUS_DATA_INT_S;
+        case Data::DataClass_T::COMMBUS_DATA_FLOAT_T: return _dt->COMMBUS_DATA_FLOAT_S;
+        case Data::DataClass_T::COMMBUS_DATA_BOOL_T: return _dt->COMMBUS_DATA_BOOL_S;
 
+        case Data::DataClass_T::COMMBUS_DATA_STRING_T: return _dt->COMMBUS_DATA_STRING_S.c_str();
+        case Data::DataClass_T::COMMBUS_DATA_INT_ARR_T: return _dt->COMMBUS_DATA_INT_ARR_S;
+        case Data::DataClass_T::COMMBUS_DATA_FLOAT_ARR_T: return _dt->COMMBUS_DATA_FLOAT_ARR_S;
+        case Data::DataClass_T::COMMBUS_DATA_BOOL_ARR_T: return _dt->COMMBUS_DATA_BOOL_ARR_S;
+      }
+    }
+
+    /**
+     * @brief Get using std::get_if
+     * 
+     * @tparam T 
+     * @param default_value 
+     * @return T 
+     */
+    template<typename T>
+    T get(T default_value) {
+      try {
+        return std::get<T>(getVariant()); 
+      } catch (std::bad_variant_access&) {
+        return default_value;
+      }
+    }
+
+    /**
+     * @brief Get the Type object
+     * 
+     * @return Data::DataClass_T 
+     */
+    Data::DataClass_T getType() {
+      return _dt->type;
+    }
     
-    // char getChar() { return get().COMMBUS_DATA_CHAR_S; }
-    // int getInt() { return get().COMMBUS_DATA_INT_S; }
-    // float getFloat() { return get().COMMBUS_DATA_FLOAT_S; }
-    // bool getBool() { return get().COMMBUS_DATA_BOOL_S; }
+    
 
    private:
-    Data::Datagram _dt;
+    std::shared_ptr<Data::DataValue> _dt;
     std::string _name;
   };
 }

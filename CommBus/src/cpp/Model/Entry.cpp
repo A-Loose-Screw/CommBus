@@ -2,9 +2,9 @@
 
 using namespace CommBus::Model;
 
-Entry::Entry(std::string &name) {
-  _name = name;
-}
+// Entry::Entry(std::string &name) {
+//   _name = name;
+// }
 
 // void Entry::set(Data::DataConstruct data, Data::DataClass type) {
 
