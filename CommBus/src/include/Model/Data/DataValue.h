@@ -41,10 +41,10 @@ namespace Data {
     DataValue(const bool &v) :            COMMBUS_DATA_BOOL_S(v), type(DataClass_T::COMMBUS_DATA_BOOL_T) {}
 
     DataValue(const char* v) :            COMMBUS_DATA_RAW_S(std::move(v)), type(DataClass_T::COMMBUS_DATA_RAW_T) {}
-    DataValue(std::string &v) :          COMMBUS_DATA_STRING_S(std::move(v)), type(DataClass_T::COMMBUS_DATA_STRING_T) {}
-    DataValue(std::vector<int> &v) :     COMMBUS_DATA_INT_ARR_S(std::move(v)), type(DataClass_T::COMMBUS_DATA_INT_ARR_T) {}
-    DataValue(std::vector<double> &v) :  COMMBUS_DATA_DOUBLE_ARR_S(std::move(v)), type(DataClass_T::COMMBUS_DATA_DOUBLE_ARR_T) {}
-    DataValue(std::vector<bool> &v) :    COMMBUS_DATA_BOOL_ARR_S(std::move(v)), type(DataClass_T::COMMBUS_DATA_BOOL_ARR_T) {}
+    DataValue(std::string &v) :           COMMBUS_DATA_STRING_S(std::move(v)), type(DataClass_T::COMMBUS_DATA_STRING_T) {}
+    DataValue(std::vector<int> &v) :      COMMBUS_DATA_INT_ARR_S(std::move(v)), type(DataClass_T::COMMBUS_DATA_INT_ARR_T) {}
+    DataValue(std::vector<double> &v) :   COMMBUS_DATA_DOUBLE_ARR_S(std::move(v)), type(DataClass_T::COMMBUS_DATA_DOUBLE_ARR_T) {}
+    DataValue(std::vector<bool> &v) :     COMMBUS_DATA_BOOL_ARR_S(std::move(v)), type(DataClass_T::COMMBUS_DATA_BOOL_ARR_T) {}
 
 
     /**

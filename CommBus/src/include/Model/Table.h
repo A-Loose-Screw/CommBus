@@ -47,6 +47,20 @@ namespace Models {
      */
     std::string getName();
 
+    /**
+     * @brief Get the Entry Names
+     * 
+     * @return std::vector<std::string> 
+     */
+    std::vector<std::string> getEntryNames();
+
+    /**
+     * @brief Get vector of existing entries
+     * 
+     * @return std::vector<std::shared_ptr<Entry>> 
+     */
+    std::vector<std::shared_ptr<Entry>> getEntries();
+
    private:
     std::string _name;
     std::vector<std::shared_ptr<Entry>> _entries;

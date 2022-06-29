@@ -5,9 +5,11 @@
 #include <memory>
 #include <iostream>
 #include <variant>
+#include <atomic>
 #include "Data/DataValue.h"
 
 namespace CommBus {
+class Network;
 namespace Models {
 
   /**
@@ -38,6 +40,7 @@ namespace Models {
     template<typename T>
     void set(T v) {
       _dt = std::make_unique<Data::DataValue>(v);
+      _hasChanged = true;
     }
 
     /**
@@ -114,9 +117,12 @@ namespace Models {
      */
     std::string getName();
 
+    friend class ::CommBus::Network;
    private:
     std::unique_ptr<Data::DataValue> _dt;
     std::string _name;
+    std::atomic_bool _hasChanged{false};
+
   };
 }
 }

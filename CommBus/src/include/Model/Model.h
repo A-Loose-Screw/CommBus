@@ -42,6 +42,13 @@ namespace Models {
      * @return int 
      */
     int getSize();
+
+    /**
+     * @brief Get vector of existing tables
+     * 
+     * @return std::vector<std::shared_ptr<Table>> 
+     */
+    std::vector<std::shared_ptr<Table>> getTables();
    private:
     const std::string _name = "root";
     std::vector<std::shared_ptr<Table>> _tables;
