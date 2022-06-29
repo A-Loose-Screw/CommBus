@@ -28,6 +28,13 @@ namespace Models {
      * @return std::shared_ptr<Table> 
      */
     std::shared_ptr<Table> getTable(std::string name);
+
+    /**
+     * @brief Get the Table Names
+     * 
+     * @return std::vector<std::string> 
+     */
+    std::vector<std::string> getTableNames();
     
     /**
      * @brief Get the Size of the model, (number of tables)

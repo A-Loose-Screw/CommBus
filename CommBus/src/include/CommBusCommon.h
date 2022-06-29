@@ -1,0 +1,28 @@
+#ifndef COMMBUS_COMMON_H
+#define COMMBUS_COMMON_H
+
+/**
+ * @brief Common stringifies
+ * 
+ */
+#ifndef COMMBUS_STRINGIFY
+#define COMMBUS_STRINGIFY(x) #x
+#endif
+
+#ifndef COMMBUS_TOSTRING
+#define COMMBUS_TOSTRING(x) COMMBUS_STRINGIFY(x)
+#endif
+
+#ifndef COMMBUS_ADDR_PORT
+#define COMMBUS_ADDR_PORT 1905
+#endif
+
+#ifndef COMMBUS_LOCAL_ADDR_IP
+#define COMMBUS_LOCAL_ADDR_IP "tcp://0.0.0.0"
+#endif
+
+#ifndef COMMBUS_LOCAL_ADDR
+#define COMMBUS_LOCAL_ADDR COMMBUS_LOCAL_ADDR_IP ":" COMMBUS_TOSTRING(COMMBUS_ADDR_PORT)
+#endif
+
+#endif

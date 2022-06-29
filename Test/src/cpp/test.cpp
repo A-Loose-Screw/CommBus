@@ -4,62 +4,42 @@
 #include <chrono>
 
 // #include "nng/compat/nanomsg/nn.h"
-// #include "nng/compat/nanomsg/bus.h"
+#include "nng/compat/nanomsg/bus.h"
 #include "CommBus.h"
 
 // #define SOCKET_BUS_ADDR_INPROC "inproc://bus"
-#define SOCKET_BUS_ADDR "inproc://bus"
+// #define SOCKET_BUS_LOCAL_ADDR "tcp://0.0.0.0:1905"
+#define SOCKET_BUS_SERVER_ADDR COMMBUS_LOCAL_ADDR
 
 // #define CLIENT_RECV_IMPL(x,y) try {y=x;} catch(const std::exception& e) {std::cerr << e.what() << '\n';}
 // #define CLIENT_RECV(x)  try {x;} catch(const std::exception& e) {std::cerr << e.what() << '\n';}
 
 int main() {
-  CommBus::Models::Model model;
+  // auto bus1 = nng::bus::open();
+  // auto bus2 = nng::bus::open();
+  // auto bus3 = nng::bus::open();
 
-  model.getTable("HID")->getEntry("Xbox_X")->set(0.3);
-  auto xbox = model.getTable("HID")->getEntry("Entry");
+  // bus1.listen(SOCKET_BUS_LOCAL_ADDR);
+  // bus2.dial(SOCKET_BUS_ADDR);
+  // bus3.dial(SOCKET_BUS_ADDR);
 
-  xbox->set(3.1);
-  std::cout << "Xbox: " << xbox->get(0.0) << std::endl;
+  // bus1.send("test");
 
-  xbox->set('c');
-  std::cout << "Xbox: " << xbox->get(' ') << std::endl;
+  // std::cout << "Data: " << bus2.recv().data<char>() << std::endl;
+  // std::cout << "Data: " << bus3.recv().data<char>() << std::endl;
 
-  xbox->set(true);
-  std::cout << "Xbox: " << xbox->get(false) << std::endl;
 
-  xbox->set(3);
-  std::cout << "Xbox: " << xbox->get(0) << std::endl;
-
-  xbox->set((std::string)"Test");
-  std::cout << "Xbox: " << xbox->get((std::string)"") << std::endl;
-
-  xbox->set("Test");
-  std::cout << "Xbox: " << xbox->get("") << std::endl;
-
-  xbox->set(std::vector<int>{3,2,1});
-  std::cout << "Xbox: " << xbox->get(std::vector<int>{0})[0] << std::endl;
-
-  xbox->set(std::vector<double>{3.2,2.2,1});
-  std::cout << "Xbox: " << xbox->get(std::vector<double>{0})[0] << std::endl;
-
-  xbox->set(std::vector<bool>{true,false,false});
-  std::cout << "Xbox: " << xbox->get(std::vector<bool>{0})[0] << std::endl;
-  
-
-  // model.getTable("HID")->getEntry("Xbox_X")->set(0.3);
-  // std::cout << "Type: " << (int)model.getTable("HID")->getEntry("Xbox_X")->getType() << std::endl;
-  // std::cout << model.getTable("HID")->getEntry("Xbox_X")->get(0.0) << std::endl;
   /**
-   * @brief PubSub
+   * @brief pub sub
    * 
    */
   // auto server = nng::pub::open();
   // // server.dial(SOCKET_BUS_ADDR);
-  // server.listen(SOCKET_BUS_ADDR);
+  // server.listen(SOCKET_BUS_SERVER_ADDR);
 
   // auto client1 = nng::sub::open();
   // auto client2 = nng::sub::open();
+  // // auto client_sender = nng::sub::open();
 
   // nng::set_opt_recv_timeout(client1, 100);
   // nng::set_opt_recv_timeout(client2, 100);
@@ -67,11 +47,14 @@ int main() {
   // nng::sub::set_opt_subscribe(client1, {"DATE:", 5});
   // nng::sub::set_opt_subscribe(client2, {"TIME:", 5});
 
-  // client1.dial(SOCKET_BUS_ADDR);
-  // client2.dial(SOCKET_BUS_ADDR);
+  // client1.dial(SOCKET_BUS_SERVER_ADDR);
+  // client2.dial(SOCKET_BUS_SERVER_ADDR);
+  // // client_sender.dial(SOCKET_BUS_SERVER_ADDR);
 
-  // server.send("DATE: it's actually not a date");
+  // // server.send("DATE: it's actually not a date");
   // server.send("TIME: but more");
+
+  // // client2.send("Test");
 
   // nng::buffer buffer1;
   // try {
@@ -94,13 +77,5 @@ int main() {
   //   // std::cerr << e.what() << '\n';
   //   std::cout << e.what() << std::endl;
   // }
-
-
   return 0;
 }
-// catch( const nng::exception& e ) {
-//   // who() is the name of the nng function that produced the error
-//   // what() is a description of the error code
-//   printf( "%s: %s\n", e.who(), e.what() );
-//   return 1;
-// }
