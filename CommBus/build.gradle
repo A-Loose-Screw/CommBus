@@ -9,6 +9,7 @@ library {
 
   linkage = [Linkage.STATIC]
   source.from file("src/cpp")
+  privateHeaders.from file("src/cpp")
   publicHeaders.from file("src/include")
 
   binaries.configureEach {

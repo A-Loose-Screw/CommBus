@@ -39,7 +39,7 @@ namespace Models {
      */
     template<typename T>
     void set(T v) {
-      _dt = std::make_unique<Data::DataValue>(v);
+      setNoChange(v);
       _hasChanged = true;
     }
 
@@ -121,8 +121,13 @@ namespace Models {
    private:
     std::unique_ptr<Data::DataValue> _dt;
     std::string _name;
-    std::atomic_bool _hasChanged{false};
 
+    template<typename T>
+    void setNoChange(T v) {
+      _dt = std::make_unique<Data::DataValue>(v);
+    }
+
+    std::atomic_bool _hasChanged{false};
   };
 }
 }

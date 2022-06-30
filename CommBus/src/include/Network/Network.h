@@ -40,11 +40,8 @@ namespace CommBus {
     void update() {
       std::vector<std::shared_ptr<Models::Entry>> changedEntries;
 
-      
-      for (auto table : getModel()->getTables()) {
-        // if (table->getEntries().size() <= 0);return;
-
-        for (auto entry : table->getEntries()) {
+      for (auto &table : getModel()->getTables()) {
+        for (auto &entry : table->getEntries()) {
           // check if it's been updated
           if (entry->_hasChanged) {
             changedEntries.push_back(entry);
