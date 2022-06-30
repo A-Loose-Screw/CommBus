@@ -7,10 +7,12 @@
 
 #include "CommBusCommon.h"
 #include "nngpp/nngpp.h"
-#include "nngpp/protocol/bus0.h"
 #include "Model/Model.h"
 
+// struct nng::socket;
+
 namespace CommBus {
+
   class Network {
    public:
 
@@ -23,44 +25,32 @@ namespace CommBus {
       NODE
     };
 
-    Network(Type type, std::string address = COMMBUS_LOCAL_ADDR) {
-      _type = type;
-      _addr = address;
+    Network(Type type, std::string address = COMMBUS_LOCAL_ADDR);
 
-      _socket = nng::bus::open();
-    }
+    /**
+     * @brief Start the service
+     * 
+     */
+    void start();
 
-    void start() {
-      switch (_type) {
-        case Type::SERVER: _socket.listen(_addr.c_str()); break;
-        case Type::NODE: _socket.dial(_addr.c_str()); break;
-      }
-    }
+    /**
+     * @brief Update the sender, (checks entries for changes and sends the changes)
+     * 
+     */
+    void senderUpdate();
 
-    void update() {
-      std::vector<std::shared_ptr<Models::Entry>> changedEntries;
-
-      for (auto &table : getModel()->getTables()) {
-        for (auto &entry : table->getEntries()) {
-          // check if it's been updated
-          if (entry->_hasChanged) {
-            changedEntries.push_back(entry);
-            entry->_hasChanged = false;
-          }
-        }
-      }
-
-      // @TODO send the changed entries (with the table name)
-    }
+    /**
+     * @brief Checks network for sent changes, and changes local network model when prompted
+     * 
+     */
+    void receiverUpdate();
 
     /**
      * @brief Return data model
      * 
      * @return std::shared_ptr<Models::Model> 
      */
-    std::shared_ptr<Models::Model> getModel() {
-      return _model;
-    }
+    std::shared_ptr<Models::Model> getModel();
 
    private:
     Type _type = { Type::NODE };

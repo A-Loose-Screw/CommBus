@@ -119,6 +119,7 @@ namespace Models {
 
 
     friend class ::CommBus::Network;
+   private:
     /**
      * @brief Get Datagram of entry (does not set location)
      * 
@@ -174,7 +175,6 @@ namespace Models {
 
       _dt->type = d.type; 
     }
-   private:
 
     std::unique_ptr<Data::DataValue> _dt;
     std::string _name;
