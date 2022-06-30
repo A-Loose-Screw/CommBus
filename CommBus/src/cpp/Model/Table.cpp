@@ -42,4 +42,6 @@ std::vector<std::string> Table::getEntryNames() {
   for (auto &entry : _entries) {
     names.push_back(entry->getName());
   }
+
+  return names;
 }

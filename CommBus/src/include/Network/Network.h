@@ -37,13 +37,13 @@ namespace CommBus {
      * @brief Update the sender, (checks entries for changes and sends the changes)
      * 
      */
-    void senderUpdate();
+    void senderUpdate(bool noBlock = false);
 
     /**
      * @brief Checks network for sent changes, and changes local network model when prompted
      * 
      */
-    void receiverUpdate();
+    void receiverUpdate(bool noBlock = false);
 
     /**
      * @brief Return data model

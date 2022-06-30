@@ -32,6 +32,8 @@ std::vector<std::string> Model::getTableNames() {
   for (auto &table : _tables) {
     names.push_back(table->getName());
   }
+
+  return names;
 }
 
 int Model::getSize() {

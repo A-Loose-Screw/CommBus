@@ -27,34 +27,55 @@ void Network::start() {
   }
 }
 
-void Network::senderUpdate() {
+void Network::senderUpdate(bool noBlock) {
   std::vector<Models::Data::Datagram> changedEntries;
-  for (auto &table : getModel()->getTables()) {
-    for (auto &entry : table->getEntries()) {
-      // check if it's been updated
-      if (entry->_hasChanged) {
-        Models::Data::Datagram d = entry->getDatagram();
-        d.location = (table->getName() + "/" + entry->getName());
-        changedEntries.push_back(d);
-        entry->_hasChanged = false;
+
+  // Get tables
+  if (getModel()->getTables().size() > 0) {
+    for (auto &table : getModel()->getTables()) {
+
+      // Get entries
+      if (table->getEntries().size() > 0) {
+        for (auto &entry : table->getEntries()) {
+          // check if entry has been changed
+          if (entry->_hasChanged) {
+            Models::Data::Datagram d = entry->getDatagram();
+            d.location = (table->getName() + "/" + entry->getName());
+            changedEntries.push_back(d);
+            entry->_hasChanged = false;
+          }
+        }
       }
     }
   }
 
-  // @TODO send the changed entries (with the table name)
-  for (auto &entryDatagram : changedEntries) {
-    Buffer buffer;
-    auto writtenSize = bitsery::quickSerialization<OutputAdapter>(buffer, entryDatagram);
-    const char *sendBuffer = reinterpret_cast<char *>(buffer.data());
-    _socket.send({sendBuffer, writtenSize});
-    std::cout << "Sent data" << std::endl; // debug tmp
+  if (changedEntries.size() > 0) {
+    for (auto &entryDatagram : changedEntries) {
+      Buffer buffer;
+      auto writtenSize = bitsery::quickSerialization<OutputAdapter>(buffer, entryDatagram);
+      const char *sendBuffer = reinterpret_cast<char *>(buffer.data());
+      
+      try {
+        _socket.send(nng::view{sendBuffer, writtenSize}, noBlock ? NNG_FLAG_NONBLOCK : 0);
+      } catch (const nng::exception &e) {
+        printf( "%s: %s\n", e.who(), e.what() );
+        break;
+      }
+    }
   }
 }
 
-void Network::receiverUpdate() {
+void Network::receiverUpdate(bool noBlock) {
   Models::Data::Datagram changedEntry;
-  nng::buffer receiveBuffer = _socket.recv();
-  Buffer buffer(receiveBuffer.data<char>(), receiveBuffer.size());
+  nng::buffer receiveBuffer;
+  Buffer buffer;
+  try {
+    receiveBuffer = _socket.recv( noBlock ? NNG_FLAG_NONBLOCK : 0);
+    buffer = Buffer(receiveBuffer.data<char>(), receiveBuffer.size());
+  } catch (const nng::exception &e) {
+    printf( "%s: %s\n", e.who(), e.what() );
+    return;
+  }
   auto state = bitsery::quickDeserialization<InputAdapter>({buffer.begin(), receiveBuffer.size()}, changedEntry);
 
   if (state.first == bitsery::ReaderError::NoError) {
