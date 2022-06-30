@@ -39,7 +39,7 @@ namespace Models {
      */
     template<typename T>
     void set(T v) {
-      setNoChange(v);
+      _dt = std::make_unique<Data::DataValue>(v);
       _hasChanged = true;
     }
 
@@ -117,15 +117,67 @@ namespace Models {
      */
     std::string getName();
 
+
     friend class ::CommBus::Network;
+    /**
+     * @brief Get Datagram of entry (does not set location)
+     * 
+     * @return Data::Datagram 
+     */
+    Data::Datagram getDatagram() {
+      Data::Datagram d;
+      d.type = _dt->type;
+      switch (_dt->type) {
+        case Data::DataClass_T::COMMBUS_DATA_CHAR_T: d.COMMBUS_DATA_CHAR_S = _dt->COMMBUS_DATA_CHAR_S; break;
+        case Data::DataClass_T::COMMBUS_DATA_INT_T: d.COMMBUS_DATA_INT_S = _dt->COMMBUS_DATA_INT_S; break;
+        case Data::DataClass_T::COMMBUS_DATA_DOUBLE_T: d.COMMBUS_DATA_DOUBLE_S = _dt->COMMBUS_DATA_DOUBLE_S; break;
+        case Data::DataClass_T::COMMBUS_DATA_BOOL_T: d.COMMBUS_DATA_BOOL_S = _dt->COMMBUS_DATA_BOOL_S; break;
+
+        case Data::DataClass_T::COMMBUS_DATA_RAW_T: d.COMMBUS_DATA_RAW_S = _dt->COMMBUS_DATA_RAW_S; break;
+        case Data::DataClass_T::COMMBUS_DATA_STRING_T: d.COMMBUS_DATA_STRING_S = _dt->COMMBUS_DATA_STRING_S; break;
+        case Data::DataClass_T::COMMBUS_DATA_INT_ARR_T: d.COMMBUS_DATA_INT_ARR_S = _dt->COMMBUS_DATA_INT_ARR_S; break;
+        case Data::DataClass_T::COMMBUS_DATA_DOUBLE_ARR_T: d.COMMBUS_DATA_DOUBLE_ARR_S = _dt->COMMBUS_DATA_DOUBLE_ARR_S; break;
+        case Data::DataClass_T::COMMBUS_DATA_BOOL_ARR_T:
+          for (auto act_bool : _dt->COMMBUS_DATA_BOOL_ARR_S) {
+            d.COMMBUS_DATA_BOOL_ARR_S.push_back(act_bool);
+          }
+          break;
+      }
+
+      return d;
+    }
+
+    /**
+     * @brief Set entry based on a datagram
+     * 
+     * @param d 
+     */
+    void setFromDatagram(Data::Datagram d) {
+      switch (d.type) {
+        case Data::DataClass_T::COMMBUS_DATA_CHAR_T: _dt = std::make_unique<Data::DataValue>(d.COMMBUS_DATA_CHAR_S); break;
+        case Data::DataClass_T::COMMBUS_DATA_INT_T: _dt = std::make_unique<Data::DataValue>(d.COMMBUS_DATA_INT_S); break;
+        case Data::DataClass_T::COMMBUS_DATA_DOUBLE_T: _dt = std::make_unique<Data::DataValue>(d.COMMBUS_DATA_DOUBLE_S); break;
+        case Data::DataClass_T::COMMBUS_DATA_BOOL_T: _dt = std::make_unique<Data::DataValue>(d.COMMBUS_DATA_BOOL_S); break;
+
+        case Data::DataClass_T::COMMBUS_DATA_RAW_T: _dt = std::make_unique<Data::DataValue>(d.COMMBUS_DATA_RAW_S); break;
+        case Data::DataClass_T::COMMBUS_DATA_STRING_T: _dt = std::make_unique<Data::DataValue>(d.COMMBUS_DATA_STRING_S); break;
+        case Data::DataClass_T::COMMBUS_DATA_INT_ARR_T: _dt = std::make_unique<Data::DataValue>(d.COMMBUS_DATA_INT_ARR_S); break;
+        case Data::DataClass_T::COMMBUS_DATA_DOUBLE_ARR_T: _dt = std::make_unique<Data::DataValue>(d.COMMBUS_DATA_DOUBLE_ARR_S); break;
+        case Data::DataClass_T::COMMBUS_DATA_BOOL_ARR_T: 
+          std::vector<bool> tmp;
+          for (auto char_bool : d.COMMBUS_DATA_BOOL_ARR_S) {
+            tmp.push_back(char_bool);
+          }
+          _dt = std::make_unique<Data::DataValue>(tmp); 
+          break;
+      }
+
+      _dt->type = d.type; 
+    }
    private:
+
     std::unique_ptr<Data::DataValue> _dt;
     std::string _name;
-
-    template<typename T>
-    void setNoChange(T v) {
-      _dt = std::make_unique<Data::DataValue>(v);
-    }
 
     std::atomic_bool _hasChanged{false};
   };

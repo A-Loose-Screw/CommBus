@@ -17,6 +17,7 @@ namespace Data {
    */
   struct DataValue {
     DataClass_T type;
+    // COMMBUS_SUPP_DATATYPES_S
 
     /**
      * @brief Supported data types
@@ -61,6 +62,42 @@ namespace Data {
       }
     }
   };
+
+  struct Datagram {
+    std::string location;
+
+    char                        COMMBUS_DATA_CHAR_S;
+    int                         COMMBUS_DATA_INT_S;
+    double                      COMMBUS_DATA_DOUBLE_S;
+    bool                        COMMBUS_DATA_BOOL_S;
+
+    std::string                 COMMBUS_DATA_RAW_S;
+    std::string                 COMMBUS_DATA_STRING_S;
+    std::vector<int>            COMMBUS_DATA_INT_ARR_S;
+    std::vector<double>         COMMBUS_DATA_DOUBLE_ARR_S;
+    std::vector<unsigned char>  COMMBUS_DATA_BOOL_ARR_S;
+
+    DataClass_T type;
+  };
+
+  template<typename S>
+  void serialize(S &s, Datagram &o) {
+    s.text1b(o.location, 128);
+
+    s.value1b(o.COMMBUS_DATA_CHAR_S);
+    s.value4b(o.COMMBUS_DATA_INT_S);
+    s.value8b(o.COMMBUS_DATA_DOUBLE_S);
+    s.value1b(o.COMMBUS_DATA_BOOL_S);
+
+    s.text1b(o.COMMBUS_DATA_RAW_S, 128);
+    s.text1b(o.COMMBUS_DATA_STRING_S, 128);
+    
+    s.container4b(o.COMMBUS_DATA_INT_ARR_S, 128);
+    s.container8b(o.COMMBUS_DATA_DOUBLE_ARR_S, 128);
+    s.container1b(o.COMMBUS_DATA_BOOL_ARR_S, 128);
+
+    s.value2b(o.type);
+  }
 }
 }
 }
