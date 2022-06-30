@@ -22,7 +22,7 @@ namespace Models {
    * @type: String
    * @type: Char array/Raw
    * @type: Int Array
-   * @type: Float Array
+   * @type: Double Array
    * @type: Boolean Array
    * 
    * 
@@ -49,7 +49,7 @@ namespace Models {
      * @return std::variant<
      * char,
      * int,
-     * float,
+     * double,
      * bool,
      * std::string,
      * const char*,

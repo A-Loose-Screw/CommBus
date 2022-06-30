@@ -20,12 +20,8 @@ using d_micro = std::chrono::duration<double, std::micro>;
 using namespace CommBus::Models;
 
 int main() try {
-
-  Model md;
-  md.getTable("Drivetrain")->getEntry("Entry")->set("Test from drivetrain entry");
-
   CommBus::Network server(CommBus::Network::Type::SERVER);
-  CommBus::Network node(CommBus::Network::Type::NODE, "tcp://127.0.0.1:1905");
+  CommBus::Network node(CommBus::Network::Type::NODE, COMMBUS_GET_EXTERNAL_IP("127.0.0.1"));
 
   server.start();
   node.start();
@@ -61,9 +57,9 @@ int main() try {
    * @brief Results
    * 
    */
-  std::cout << "Serialized Send Time: " << sender_time << std::endl;
-  std::cout << "Deserialized Receive Time: " << receiver_time << std::endl;
-  std::cout << "Simulated Respones Time: " << sender_time+receiver_time << std::endl;
+  std::cout << "Serialized Send Time (us): " << sender_time << std::endl;
+  std::cout << "Deserialized Receive Time (us): " << receiver_time << std::endl;
+  std::cout << "Simulated Respones Time (us): " << sender_time+receiver_time << std::endl;
 
   std::cout << "Result data" << std::endl;
   for (auto v : entry) {
