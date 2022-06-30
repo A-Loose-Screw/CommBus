@@ -6,7 +6,7 @@ Communication bus network. Using the [NNG](https://github.com/nanomsg/nng) bus p
 [![Build Status](https://dev.azure.com/ConnorBuchel0890/A-Loose-Screw/_apis/build/status/A-Loose-Screw.CommBus?branchName=master)](https://dev.azure.com/ConnorBuchel0890/A-Loose-Screw/_build/latest?definitionId=23&branchName=master)
 
 ## Usage
-- CommBus is a entry based self monitoring network solution which can be spread across multiple .
+- CommBus is a entry based self monitoring network solution which can be spread across multiple nodes.
 - Each entry can be dynamically set between the following types `(char, int, float, bool, string, char*, int vector, double vector, bool vector)`
 - Multiple entries can exist under a table with a given name specified by the user
 - Multiple tables can exist under a network model. With their own names given to by the user.
