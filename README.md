@@ -9,7 +9,7 @@ Communication bus network. Using the [NNG](https://github.com/nanomsg/nng) bus p
 - CommBus is an entry based self monitoring network solution which can be spread across multiple nodes.
 - Each entry can be dynamically set between the following types `(char, int, float, bool, string, char*, int vector, double vector, bool vector)`
 - Multiple entries can exist under a table with a given name specified by the user
-- Multiple tables can exist under a network model. With their own names given to by the user.
+- Multiple tables can exist under a network model. With their own names given by the user.
 
 ### Setting/Getting Entries
 ```cpp
