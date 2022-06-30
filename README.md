@@ -29,7 +29,7 @@ int main() {
 
   std::string name = student_table->getEntry("Name")->get(""); // get name, and provide the default value if not found (also used to determine datatype)
   int age = student_table->getEntry("Age")->(0); // get age
-  int hieght = student_table->getEntry("Height")->(0.0); // get height. Note that it needs 0.0 not just for default but also to determine double value
+  double height = student_table->getEntry("Height")->(0.0); // get height. Note that it needs 0.0 not just for default but also to determine double value
 
   /**
    * We can also create multiple tables within the model, and store more than just primitives
