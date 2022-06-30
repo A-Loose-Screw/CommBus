@@ -19,6 +19,23 @@ std::shared_ptr<Table> Model::getTable(std::string name) {
   return createTable(name);
 }
 
+std::vector<std::shared_ptr<Table>> Model::getTables() {
+  if (_tables.size() > 0) {
+    return _tables;
+  }
+
+  return {};
+}
+
+std::vector<std::string> Model::getTableNames() {
+  std::vector<std::string> names;
+  for (auto &table : _tables) {
+    names.push_back(table->getName());
+  }
+
+  return names;
+}
+
 int Model::getSize() {
   return _tables.size();
 }

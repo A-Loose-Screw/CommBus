@@ -1,0 +1,99 @@
+#include "Network/Network.h"
+
+#include "bitsery/bitsery.h"
+#include "bitsery/adapter/buffer.h"
+#include "bitsery/traits/string.h"
+#include "bitsery/traits/vector.h"
+
+#include "nngpp/protocol/bus0.h"
+
+using namespace CommBus;
+
+using Buffer = std::string;
+using OutputAdapter = bitsery::OutputBufferAdapter<Buffer>;
+using InputAdapter = bitsery::InputBufferAdapter<Buffer>;
+
+Network::Network(Type type, std::string address) {
+  _type = type;
+  _addr = address;
+
+  _socket = nng::bus::open();
+}
+
+void Network::start() {
+  switch (_type) {
+    case Type::SERVER: _socket.listen(_addr.c_str()); break;
+    case Type::NODE: _socket.dial(_addr.c_str()); break;
+  }
+}
+
+void Network::senderUpdate(bool noBlock) {
+  std::vector<Models::Data::Datagram> changedEntries;
+
+  // Get tables
+  if (getModel()->getTables().size() > 0) {
+    for (auto &table : getModel()->getTables()) {
+
+      // Get entries
+      if (table->getEntries().size() > 0) {
+        for (auto &entry : table->getEntries()) {
+          // check if entry has been changed
+          if (entry->_hasChanged) {
+            Models::Data::Datagram d = entry->getDatagram();
+            d.location = (table->getName() + "/" + entry->getName());
+            changedEntries.push_back(d);
+            entry->_hasChanged = false;
+          }
+        }
+      }
+    }
+  }
+
+  if (changedEntries.size() > 0) {
+    for (auto &entryDatagram : changedEntries) {
+      Buffer buffer;
+      auto writtenSize = bitsery::quickSerialization<OutputAdapter>(buffer, entryDatagram);
+      const char *sendBuffer = reinterpret_cast<char *>(buffer.data());
+      
+      try {
+        _socket.send(nng::view{sendBuffer, writtenSize}, noBlock ? NNG_FLAG_NONBLOCK : 0);
+      } catch (const nng::exception &e) {
+        printf( "%s: %s\n", e.who(), e.what() );
+        break;
+      }
+    }
+  }
+}
+
+void Network::receiverUpdate(bool noBlock) {
+  Models::Data::Datagram changedEntry;
+  nng::buffer receiveBuffer;
+  Buffer buffer;
+  try {
+    receiveBuffer = _socket.recv( noBlock ? NNG_FLAG_NONBLOCK : 0);
+    buffer = Buffer(receiveBuffer.data<char>(), receiveBuffer.size());
+  } catch (const nng::exception &e) {
+    printf( "%s: %s\n", e.who(), e.what() );
+    return;
+  }
+  auto state = bitsery::quickDeserialization<InputAdapter>({buffer.begin(), receiveBuffer.size()}, changedEntry);
+
+  if (state.first == bitsery::ReaderError::NoError) {
+    std::string delimiter = "/";
+    std::vector<std::string> tokens;
+    
+    auto start = 0U;
+    auto end = changedEntry.location.find(delimiter);
+
+    tokens.push_back(changedEntry.location.substr(start, end));
+    start = end + delimiter.length();
+    end = changedEntry.location.length();
+    tokens.push_back(changedEntry.location.substr(start, end));
+
+    _model->getTable(tokens[0])->getEntry(tokens[1])->setFromDatagram(changedEntry); // creates entry automatically
+  }
+}
+
+std::shared_ptr<Models::Model> Network::getModel() {
+  return _model;
+}

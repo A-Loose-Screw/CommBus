@@ -8,7 +8,7 @@ namespace Data {
    * @brief Classification for all supported datatypes in the Models
    * 
    */
-  enum class DataClass_T {
+  enum class DataClass_T:uint16_t {
     COMMBUS_DATA_RAW_T          = 0,
     COMMBUS_DATA_CHAR_T         = 1,
     COMMBUS_DATA_INT_T          = 2,

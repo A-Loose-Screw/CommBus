@@ -2,105 +2,72 @@
 #include <thread>
 #include <string>
 #include <chrono>
+#include <algorithm>
 
 // #include "nng/compat/nanomsg/nn.h"
-// #include "nng/compat/nanomsg/bus.h"
+#include "nng/compat/nanomsg/bus.h"
 #include "CommBus.h"
 
+#include "Network/Network.h"
+
 // #define SOCKET_BUS_ADDR_INPROC "inproc://bus"
-#define SOCKET_BUS_ADDR "inproc://bus"
+#define SOCKET_BUS_LOCAL_ADDR "tcp://0.0.0.0:1905"
+#define SOCKET_BUS_SERVER_ADDR COMMBUS_LOCAL_ADDR
 
-// #define CLIENT_RECV_IMPL(x,y) try {y=x;} catch(const std::exception& e) {std::cerr << e.what() << '\n';}
-// #define CLIENT_RECV(x)  try {x;} catch(const std::exception& e) {std::cerr << e.what() << '\n';}
+using namespace std::literals::chrono_literals;
+using d_micro = std::chrono::duration<double, std::micro>;
 
-int main() {
-  CommBus::Models::Model model;
+using namespace CommBus::Models;
 
-  model.getTable("HID")->getEntry("Xbox_X")->set(0.3);
-  auto xbox = model.getTable("HID")->getEntry("Entry");
+int main() try {
+  CommBus::Network server(CommBus::Network::Type::SERVER);
+  CommBus::Network node(CommBus::Network::Type::NODE, COMMBUS_GET_EXTERNAL_IP("127.0.0.1"));
 
-  xbox->set(3.1);
-  std::cout << "Xbox: " << xbox->get(0.0) << std::endl;
+  server.start();
+  node.start();
 
-  xbox->set('c');
-  std::cout << "Xbox: " << xbox->get(' ') << std::endl;
-
-  xbox->set(true);
-  std::cout << "Xbox: " << xbox->get(false) << std::endl;
-
-  xbox->set(3);
-  std::cout << "Xbox: " << xbox->get(0) << std::endl;
-
-  xbox->set((std::string)"Test");
-  std::cout << "Xbox: " << xbox->get((std::string)"") << std::endl;
-
-  xbox->set("Test");
-  std::cout << "Xbox: " << xbox->get("") << std::endl;
-
-  xbox->set(std::vector<int>{3,2,1});
-  std::cout << "Xbox: " << xbox->get(std::vector<int>{0})[0] << std::endl;
-
-  xbox->set(std::vector<double>{3.2,2.2,1});
-  std::cout << "Xbox: " << xbox->get(std::vector<double>{0})[0] << std::endl;
-
-  xbox->set(std::vector<bool>{true,false,false});
-  std::cout << "Xbox: " << xbox->get(std::vector<bool>{0})[0] << std::endl;
-  
-
-  // model.getTable("HID")->getEntry("Xbox_X")->set(0.3);
-  // std::cout << "Type: " << (int)model.getTable("HID")->getEntry("Xbox_X")->getType() << std::endl;
-  // std::cout << model.getTable("HID")->getEntry("Xbox_X")->get(0.0) << std::endl;
   /**
-   * @brief PubSub
+   * @brief Seralize/sender
    * 
    */
-  // auto server = nng::pub::open();
-  // // server.dial(SOCKET_BUS_ADDR);
-  // server.listen(SOCKET_BUS_ADDR);
+  auto start = std::chrono::high_resolution_clock::now();
+  server.getModel()->getTable("Drivetrain")->getEntry("Test")->set(std::vector<double>{3.04, 1.001, 0.45});
 
-  // auto client1 = nng::sub::open();
-  // auto client2 = nng::sub::open();
+  server.senderUpdate(true);
+  auto stop = std::chrono::high_resolution_clock::now();
+  double sender_time = std::chrono::duration_cast<d_micro>(stop-start).count();
 
-  // nng::set_opt_recv_timeout(client1, 100);
-  // nng::set_opt_recv_timeout(client2, 100);
 
-  // nng::sub::set_opt_subscribe(client1, {"DATE:", 5});
-  // nng::sub::set_opt_subscribe(client2, {"TIME:", 5});
+  std::this_thread::sleep_for(3s);
 
-  // client1.dial(SOCKET_BUS_ADDR);
-  // client2.dial(SOCKET_BUS_ADDR);
 
-  // server.send("DATE: it's actually not a date");
-  // server.send("TIME: but more");
+  /**
+   * @brief Deserializer/receiver
+   * 
+   */
+  start = std::chrono::high_resolution_clock::now();
+  node.receiverUpdate(true);
 
-  // nng::buffer buffer1;
-  // try {
-  //   buffer1 = client1.recv(NNG_FLAG_NONBLOCK);
-  //   if (buffer1.data() != NULL) {
-  //     std::cout << "Client 1 recv " << buffer1.data<char>() << std::endl;
-  //   }
-  // } catch(const std::exception& e) {
-  //   // std::cerr << e.what() << '\n';
-  //   std::cout << e.what() << std::endl;
-  // }
+  auto entry = node.getModel()->getTable("Drivetrain")->getEntry("Test")->get(std::vector<double>{});
+  stop = std::chrono::high_resolution_clock::now();
+  double receiver_time = std::chrono::duration_cast<d_micro>(stop-start).count();
 
-  // nng::buffer buffer2;
-  // try {
-  //   buffer2 = client2.recv(NNG_FLAG_NONBLOCK);
-  //   if (buffer2.data() != NULL) {
-  //     std::cout << "Client 2 recv " << buffer2.data<char>() << std::endl;
-  //   }
-  // } catch(const std::exception& e) {
-  //   // std::cerr << e.what() << '\n';
-  //   std::cout << e.what() << std::endl;
-  // }
 
+  /**
+   * @brief Results
+   * 
+   */
+  std::cout << "Serialized Send Time (us): " << sender_time << std::endl;
+  std::cout << "Deserialized Receive Time (us): " << receiver_time << std::endl;
+  std::cout << "Simulated Respones Time (us): " << sender_time+receiver_time << std::endl;
+
+  std::cout << "Result data" << std::endl;
+  for (auto v : entry) {
+    std::cout << v << std::endl;
+  }
 
   return 0;
+} catch (const std::exception& e) {
+  std::cerr << e.what() << '\n';
+  return 0;
 }
-// catch( const nng::exception& e ) {
-//   // who() is the name of the nng function that produced the error
-//   // what() is a description of the error code
-//   printf( "%s: %s\n", e.who(), e.what() );
-//   return 1;
-// }

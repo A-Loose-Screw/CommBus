@@ -21,10 +21,27 @@ std::shared_ptr<Entry> Table::getEntry(std::string name) {
   return createEntry(name);
 }
 
+std::vector<std::shared_ptr<Entry>> Table::getEntries() {
+  if (_entries.size() > 0) {
+    return _entries;
+  }
+
+  return {};
+}
+
 int Table::getSize() {
   return _entries.size();
 }
 
 std::string Table::getName() {
   return _name;
+}
+
+std::vector<std::string> Table::getEntryNames() {
+  std::vector<std::string> names;
+  for (auto &entry : _entries) {
+    names.push_back(entry->getName());
+  }
+
+  return names;
 }
