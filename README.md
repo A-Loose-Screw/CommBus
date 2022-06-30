@@ -65,7 +65,7 @@ int main() {
    * searches for any entries that have been changed
    * And sends them over the network
    */
-  myServer.senderUpdate(); // note that by default senderUpdate is in blocking mode. set to blocking using `myServer.senderUpdate(true)`
+  myServer.senderUpdate(); // note that by default senderUpdate is in blocking mode. set to non blocking using `myServer.senderUpdate(true)`
 
   return 0;
 }
@@ -89,7 +89,7 @@ int main() {
    */
   myNode.receiverUpdate(); // Set to non blocking via `myNode.receiverUpdate(true);`
 
-  double temp = myNode.getModel()->getTable("Weather")->getEntry("Temp")->get(0.0); // set data in the table
+  double temp = myNode.getModel()->getTable("Weather")->getEntry("Temp")->get(0.0); // get data in the table
 
   std::cout << "Temp from server: " << temp << std::endl;
   return 0;
@@ -101,5 +101,5 @@ int main() {
 ### Notes
 - The network is simple and has a very fast speed using basic types. around 0.5-20ms
 - The network allows for both sending and receiving for nodes and servers. And is designed for large networks where each device needs to both send and receive data.
-- It's scalable and allows for dynamic change in data for an entry as everything is stored in variants and unions, this means it can change from being a std::string to double with little effort
-- However, only *one* type of data is allowed at a time per entry. When the datatype changes, it overwrites the previous memory address. [Union-Type](https://en.cppreference.com/w/cpp/language/union)
+- It's scalable and allows for dynamic change in data for an entry as everything is stored in variants and unions, this means an entry can change from being a std::string to double with little effort
+- However, only `one` type of data is allowed at a time per entry. When the datatype changes, it overwrites the previous memory address. See [Union-Type](https://en.cppreference.com/w/cpp/language/union)
