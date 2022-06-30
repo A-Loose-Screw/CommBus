@@ -34,6 +34,8 @@ int main() {
 
   server.senderUpdate();
 
+  std::this_thread::sleep_for(3s);
+
   node.receiverUpdate();
 
 
