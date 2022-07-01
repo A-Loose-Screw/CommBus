@@ -44,6 +44,7 @@ int Network::start(bool retryLoop) {
 }
 
 void Network::senderUpdate(bool noBlock) {
+  if (!_connected) return;
   std::vector<Models::Data::Datagram> changedEntries;
 
   // Get tables
@@ -82,6 +83,7 @@ void Network::senderUpdate(bool noBlock) {
 }
 
 void Network::receiverUpdate(bool noBlock) {
+  if (!_connected) return;
   Models::Data::Datagram changedEntry;
   nng::buffer receiveBuffer;
   Buffer buffer;
