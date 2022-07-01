@@ -30,8 +30,10 @@ namespace CommBus {
     /**
      * @brief Start the service
      * 
+     * @param retryLoop // keep retrying if connection does not succeed (loops and halts program)
+     * @return int -1 for fail. 0 for success
      */
-    void start();
+    int start(bool retryLoop = false);
 
     /**
      * @brief Update the sender, (checks entries for changes and sends the changes)
@@ -54,6 +56,7 @@ namespace CommBus {
 
    private:
     Type _type = { Type::NODE };
+    bool _connected = false;
     std::string _addr;
     nng::socket _socket;
     std::shared_ptr<Models::Model> _model = std::make_shared<Models::Model>();

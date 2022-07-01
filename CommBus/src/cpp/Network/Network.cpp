@@ -1,3 +1,5 @@
+#include <thread>
+
 #include "Network/Network.h"
 
 #include "bitsery/bitsery.h"
@@ -8,6 +10,8 @@
 #include "nngpp/protocol/bus0.h"
 
 using namespace CommBus;
+using namespace std::literals::chrono_literals;
+using d_micro = std::chrono::duration<double, std::micro>;
 
 using Buffer = std::string;
 using OutputAdapter = bitsery::OutputBufferAdapter<Buffer>;
@@ -20,11 +24,23 @@ Network::Network(Type type, std::string address) {
   _socket = nng::bus::open();
 }
 
-void Network::start() {
-  switch (_type) {
-    case Type::SERVER: _socket.listen(_addr.c_str()); break;
-    case Type::NODE: _socket.dial(_addr.c_str()); break;
-  }
+int Network::start(bool retryLoop) {
+  do {
+    if (_connected) break;
+    try {
+      switch (_type) {
+        case Type::SERVER: _socket.listen(_addr.c_str()); break;
+        case Type::NODE: _socket.dial(_addr.c_str()); break;
+      }
+      _connected = true;
+    } catch (const std::exception &e) {
+      _connected = false;
+      std::cerr << e.what() << '\n';
+      std::this_thread::sleep_for(1s);
+    }
+  } while (!_connected && retryLoop);
+
+  return _connected ? 0 : -1;
 }
 
 void Network::senderUpdate(bool noBlock) {

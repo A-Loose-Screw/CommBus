@@ -81,6 +81,8 @@ namespace Models {
         case Data::DataClass_T::COMMBUS_DATA_DOUBLE_ARR_T: return _dt->COMMBUS_DATA_DOUBLE_ARR_S;
         case Data::DataClass_T::COMMBUS_DATA_BOOL_ARR_T: return _dt->COMMBUS_DATA_BOOL_ARR_S;
       }
+
+      return 0;
     }
 
     /**
