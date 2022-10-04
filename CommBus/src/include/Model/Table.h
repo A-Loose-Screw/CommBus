@@ -2,6 +2,7 @@
 #define COMMBUS_TABLE_H
 
 #include <string>
+#include <unordered_map>
 #include "Entry.h"
 
 namespace CommBus {
@@ -59,11 +60,11 @@ namespace Models {
      * 
      * @return std::vector<std::shared_ptr<Entry>> 
      */
-    std::vector<std::shared_ptr<Entry>> getEntries();
+    std::unordered_map<std::string, std::shared_ptr<Entry>> getEntries();
 
    private:
     std::string _name;
-    std::vector<std::shared_ptr<Entry>> _entries;
+    std::unordered_map<std::string, std::shared_ptr<Entry>> _entries;
   };
 }
 }

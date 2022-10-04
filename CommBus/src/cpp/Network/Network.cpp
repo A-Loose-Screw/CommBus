@@ -52,14 +52,14 @@ void Network::senderUpdate(bool noBlock) {
     for (auto &table : getModel()->getTables()) {
 
       // Get entries
-      if (table->getEntries().size() > 0) {
-        for (auto &entry : table->getEntries()) {
+      if (table.second->getEntries().size() > 0) {
+        for (auto &entry : table.second->getEntries()) {
           // check if entry has been changed
-          if (entry->_hasChanged) {
-            Models::Data::Datagram d = entry->getDatagram();
-            d.location = (table->getName() + "/" + entry->getName());
+          if (entry.second->_hasChanged) {
+            Models::Data::Datagram d = entry.second->getDatagram();
+            d.location = (table.second->getName() + "/" + entry.second->getName());
             changedEntries.push_back(d);
-            entry->_hasChanged = false;
+            entry.second->_hasChanged = false;
           }
         }
       }

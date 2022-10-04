@@ -48,10 +48,10 @@ namespace Models {
      * 
      * @return std::vector<std::shared_ptr<Table>> 
      */
-    std::vector<std::shared_ptr<Table>> getTables();
+    std::unordered_map<std::string, std::shared_ptr<Table>> getTables();
    private:
     const std::string _name = "root";
-    std::vector<std::shared_ptr<Table>> _tables;
+    std::unordered_map<std::string, std::shared_ptr<Table>> _tables;
   };
 }
 }
