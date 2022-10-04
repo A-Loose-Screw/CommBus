@@ -63,6 +63,10 @@ namespace Data {
     }
   };
 
+  /**
+   * @brief Datagram used for sending and receiving.
+   * 
+   */
   struct Datagram {
     std::string location;
 

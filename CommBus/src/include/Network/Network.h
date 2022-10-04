@@ -5,11 +5,9 @@
 #include <functional>
 #include <chrono>
 
-#include "CommBusCommon.h"
 #include "nngpp/nngpp.h"
+#include "CommBusCommon.h"
 #include "Model/Model.h"
-
-// struct nng::socket;
 
 namespace CommBus {
 
