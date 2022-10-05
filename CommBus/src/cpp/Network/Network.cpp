@@ -7,6 +7,7 @@
 #include "bitsery/traits/string.h"
 #include "bitsery/traits/vector.h"
 
+#include "nngpp/nngpp.h"
 #include "nngpp/protocol/bus0.h"
 
 using namespace CommBus;
@@ -17,11 +18,18 @@ using Buffer = std::string;
 using OutputAdapter = bitsery::OutputBufferAdapter<Buffer>;
 using InputAdapter = bitsery::InputBufferAdapter<Buffer>;
 
+
+
 Network::Network(Type type, std::string address) {
   _type = type;
   _addr = address;
 
-  _socket = nng::bus::open();
+  _socket = malloc(sizeof(nng::socket));
+  *((nng::socket*)_socket) = nng::bus::open();
+}
+
+Network::~Network() {
+  free(_socket);
 }
 
 int Network::start(bool retryLoop) {
@@ -29,8 +37,8 @@ int Network::start(bool retryLoop) {
     if (_connected) break;
     try {
       switch (_type) {
-        case Type::SERVER: _socket.listen(_addr.c_str()); break;
-        case Type::NODE: _socket.dial(_addr.c_str()); break;
+        case Type::SERVER: ((nng::socket*)_socket)->listen(_addr.c_str()); break;
+        case Type::NODE: ((nng::socket*)_socket)->dial(_addr.c_str()); break;
       }
       _connected = true;
     } catch (const std::exception &e) {
@@ -73,7 +81,7 @@ void Network::senderUpdate(bool noBlock) {
       const char *sendBuffer = reinterpret_cast<char *>(buffer.data());
       
       try {
-        _socket.send(nng::view{sendBuffer, writtenSize}, noBlock ? NNG_FLAG_NONBLOCK : 0);
+        ((nng::socket*)_socket)->send(nng::view{sendBuffer, writtenSize}, noBlock ? NNG_FLAG_NONBLOCK : 0);
       } catch (const nng::exception &e) {
         printf( "%s: %s\n", e.who(), e.what() );
         break;
@@ -88,7 +96,7 @@ void Network::receiverUpdate(bool noBlock) {
   nng::buffer receiveBuffer;
   Buffer buffer;
   try {
-    receiveBuffer = _socket.recv( noBlock ? NNG_FLAG_NONBLOCK : 0);
+    receiveBuffer = ((nng::socket*)_socket)->recv( noBlock ? NNG_FLAG_NONBLOCK : 0);
     buffer = Buffer(receiveBuffer.data<char>(), receiveBuffer.size());
   } catch (const nng::exception &e) {
     printf( "%s: %s\n", e.who(), e.what() );

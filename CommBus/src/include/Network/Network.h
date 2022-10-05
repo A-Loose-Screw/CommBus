@@ -5,7 +5,6 @@
 #include <functional>
 #include <chrono>
 
-#include "nngpp/nngpp.h"
 #include "CommBusCommon.h"
 #include "Model/Model.h"
 
@@ -24,6 +23,7 @@ namespace CommBus {
     };
 
     Network(Type type, std::string address = COMMBUS_LOCAL_ADDR);
+    ~Network();
 
     /**
      * @brief Start the service
@@ -56,7 +56,8 @@ namespace CommBus {
     Type _type = { Type::NODE };
     bool _connected = false;
     std::string _addr;
-    nng::socket _socket;
+    void *_socket;
+
     std::shared_ptr<Models::Model> _model = std::make_shared<Models::Model>();
   };
 }
