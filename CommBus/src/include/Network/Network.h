@@ -23,7 +23,6 @@ namespace CommBus {
     };
 
     Network(Type type, std::string address = COMMBUS_LOCAL_ADDR);
-    ~Network();
 
     /**
      * @brief Start the service
@@ -56,8 +55,7 @@ namespace CommBus {
     Type _type = { Type::NODE };
     bool _connected = false;
     std::string _addr;
-    void *_socket;
-
+    std::shared_ptr<void> _nng_socket;
     std::shared_ptr<Models::Model> _model = std::make_shared<Models::Model>();
   };
 }

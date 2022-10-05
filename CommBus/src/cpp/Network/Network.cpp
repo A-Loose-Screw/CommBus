@@ -18,18 +18,11 @@ using Buffer = std::string;
 using OutputAdapter = bitsery::OutputBufferAdapter<Buffer>;
 using InputAdapter = bitsery::InputBufferAdapter<Buffer>;
 
-
-
 Network::Network(Type type, std::string address) {
   _type = type;
   _addr = address;
 
-  _socket = malloc(sizeof(nng::socket));
-  *((nng::socket*)_socket) = nng::bus::open();
-}
-
-Network::~Network() {
-  free(_socket);
+  _nng_socket = std::make_shared<nng::socket>(nng::bus::open());  
 }
 
 int Network::start(bool retryLoop) {
@@ -37,8 +30,8 @@ int Network::start(bool retryLoop) {
     if (_connected) break;
     try {
       switch (_type) {
-        case Type::SERVER: ((nng::socket*)_socket)->listen(_addr.c_str()); break;
-        case Type::NODE: ((nng::socket*)_socket)->dial(_addr.c_str()); break;
+        case Type::SERVER: std::static_pointer_cast<nng::socket>(_nng_socket)->listen(_addr.c_str()); break;
+        case Type::NODE: std::static_pointer_cast<nng::socket>(_nng_socket)->dial(_addr.c_str()); break;
       }
       _connected = true;
     } catch (const std::exception &e) {
@@ -81,7 +74,7 @@ void Network::senderUpdate(bool noBlock) {
       const char *sendBuffer = reinterpret_cast<char *>(buffer.data());
       
       try {
-        ((nng::socket*)_socket)->send(nng::view{sendBuffer, writtenSize}, noBlock ? NNG_FLAG_NONBLOCK : 0);
+        std::static_pointer_cast<nng::socket>(_nng_socket)->send(nng::view{sendBuffer, writtenSize}, noBlock ? NNG_FLAG_NONBLOCK : 0);
       } catch (const nng::exception &e) {
         printf( "%s: %s\n", e.who(), e.what() );
         break;
@@ -96,7 +89,7 @@ void Network::receiverUpdate(bool noBlock) {
   nng::buffer receiveBuffer;
   Buffer buffer;
   try {
-    receiveBuffer = ((nng::socket*)_socket)->recv( noBlock ? NNG_FLAG_NONBLOCK : 0);
+    receiveBuffer = std::static_pointer_cast<nng::socket>(_nng_socket)->recv( noBlock ? NNG_FLAG_NONBLOCK : 0);
     buffer = Buffer(receiveBuffer.data<char>(), receiveBuffer.size());
   } catch (const nng::exception &e) {
     printf( "%s: %s\n", e.who(), e.what() );
