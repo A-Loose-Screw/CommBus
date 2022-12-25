@@ -1,9 +1,48 @@
 import static org.apache.tools.ant.taskdefs.condition.Os.*
 
 plugins {
-  id 'cpp'
+  id 'cpp-library'
+  id 'cpp-unit-test'
 }
 
-wrapper {
-  gradleVersion = '7.4.2'
+library {
+  dependencies {
+    implementation project(":NNG")
+  }
+
+  linkage = [Linkage.STATIC]
+  source.from file("src/cpp")
+  privateHeaders.from file("src/private")
+  publicHeaders.from file("src/include")
+
+  binaries.configureEach {
+    
+    if (toolChain instanceof Gcc || toolChain instanceof Clang) {
+      compileTask.get().compilerArgs = ["-std=c++17", "-lpthread", "-g"]
+    } else if (toolChain instanceof VisualCpp) {
+      compileTask.get().compilerArgs = ["/std:c++17"]
+    }
+  }
 }
+
+unitTest {
+  // dependencies {
+  //   implementation 'com.google:gtest:1.8.1'
+  // }
+
+  binaries.configureEach {
+    if (targetMachine.operatingSystemFamily.linux && toolChain instanceof Gcc) {
+      linkTask.get().linkerArgs.add('-lpthread')
+    }
+
+    if (toolChain instanceof Gcc || toolChain instanceof Clang) {
+      compileTask.get().compilerArgs = ["-std=c++17", "-lpthread", "-g"]
+    } else if (toolChain instanceof VisualCpp) {
+      compileTask.get().compilerArgs = ["/std:c++17"]
+    }
+  }
+}
+
+// wrapper {
+//   gradleVersion = '7.4.2'
+// }

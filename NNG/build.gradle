@@ -6,7 +6,7 @@ library {
   linkage = [Linkage.STATIC]
 
   dependencies {
-    api project(':MbedTLS')
+    implementation project(':MbedTLS')
   }
 
   privateHeaders.from file("src/library")

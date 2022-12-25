@@ -1,7 +1,14 @@
 
-include "MbedTLS"
-include "NNG"
-include 'CommBus'
-include 'Test'
+// include ':MbedTLS'
+// include ':NNG'
+// include 'Core'
+// include 'Test'
+
+rootDir.eachDirRecurse { dir ->
+  if (new File(dir, 'build.gradle').exists()) {
+    include dir.name
+    project(":${dir.name}").projectDir = dir
+  }
+}
 
 rootProject.name = 'CommBus'

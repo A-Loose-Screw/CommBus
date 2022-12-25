@@ -18,6 +18,7 @@ using d_micro = std::chrono::duration<double, std::micro>;
 using namespace CommBus::Models;
 
 int main() try {
+  std::cout << "CommBus Test started" << std::endl;
   CommBus::Network server(CommBus::Network::Type::SERVER);
   CommBus::Network node(CommBus::Network::Type::NODE, COMMBUS_GET_EXTERNAL_IP("127.0.0.1"));
 
