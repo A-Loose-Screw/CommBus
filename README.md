@@ -98,6 +98,25 @@ int main() {
 
 - Output: `Temp from server: 27.5`
 
+
+### Import as Gradle project
+- Inside `settings.gradle` Grab all the dependencies in the project and yours (modify as your project needs)
+```gradle
+rootDir.eachDirRecurse { dir ->
+  if (new File(dir, 'build.gradle').exists()) {
+    include dir.name
+    project(":${dir.name}").projectDir = dir
+  }
+}
+```
+
+- Implement the project in your `build.gradle`
+```gradle
+dependencies {
+  implementation project(':CommBus')
+}
+```
+
 ### Notes
 - The network is simple and has a very fast speed using basic types. around 0.5-20ms
 - The network allows for both sending and receiving for nodes and servers. And is designed for large networks where each device needs to both send and receive data.
